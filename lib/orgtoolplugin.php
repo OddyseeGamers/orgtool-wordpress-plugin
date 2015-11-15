@@ -7,18 +7,18 @@ class OrgtoolPlugin {
 		$charset_collate = $wpdb->get_charset_collate();
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-		error_log(">> ceate schame");
-
-		/*
-		dbDelta( self::createMembers($charset_collate) );
-		dbDelta( self::createUnits($charset_collate) );
-		dbDelta( self::createUnitTypes($charset_collate) );
-		dbDelta( self::createMemberUnits($charset_collate) );
-		 */
+		error_log(">> create members");
+		dbDelta( self::createMembers($wpdb->prefix, $charset_collate) );
+		error_log(">> create units");
+		dbDelta( self::createUnits($wpdb->prefix, $charset_collate) );
+		error_log(">> create unit types");
+		dbDelta( self::createUnitTypes($wpdb->prefix, $charset_collate) );
+		error_log(">> create member untis");
+		dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
 	}
-/*
-	function createMembers($charset_collate) {
-		$table_name = $wpdb->prefix . "ot_member";
+
+	function createMembers($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_member";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
@@ -34,12 +34,12 @@ class OrgtoolPlugin {
 		) $charset_collate;";
 	}
 
-	function createUnits($charset_collate) {
-		$table_name = $wpdb->prefix . "ot_unit";
+	function createUnits($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_unit";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
-		  desc tinytext NOT NULL,
+		  desc text,
 		  img varchar(255) DEFAULT '' NOT NULL,
 		  type int(11) DEFAULT NULL,
 		  parent int(11) DEFAULT NULL,
@@ -50,19 +50,19 @@ class OrgtoolPlugin {
 		) $charset_collate;";
 	}
 
-	function createUnitTypes($charset_collate) {
-		$table_name = $wpdb->prefix . "ot_unit_type";
+	function createUnitTypes($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_unit_type";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
-		  desc tinytext NOT NULL,
+		  desc text,
 		  units int(11) DEFAULT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
 
-	function createMemberUnits($charset_collate) {
-		$table_name = $wpdb->prefix . "ot_member_unit";
+	function createMemberUnits($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_member_unit";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  unit int(11) DEFAULT NULL,
