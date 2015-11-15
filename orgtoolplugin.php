@@ -9,9 +9,12 @@ Author URI:
 License: GPLv2 or later
 */
 
-@include_once "lib/rsi_fetch.php";
+// @include_once "lib/rsi_fetch.php";
 // @include_once "lib/orgplugin.php";
-@include_once "lib/orgtoolplugin.php";
+// @include_once "lib/orgtoolplugin.php";
+
+require_once("lib/rsi_fetch.php");
+require_once("lib/orgtoolplugin.php");
 
 register_activation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_activation' ) );
 register_deactivation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_deactivation' ));

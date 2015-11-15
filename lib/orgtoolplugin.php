@@ -1,5 +1,4 @@
 <?php
-@include_once "lib/rsi_fetch.php";
 
 class OrgtoolPlugin {
 
@@ -8,14 +7,11 @@ class OrgtoolPlugin {
 		$charset_collate = $wpdb->get_charset_collate();
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-		error_log(">> create members");
 		dbDelta( self::createMembers($wpdb->prefix, $charset_collate) );
-		error_log(">> create units");
 		dbDelta( self::createUnits($wpdb->prefix, $charset_collate) );
-		error_log(">> create unit types");
 		dbDelta( self::createUnitTypes($wpdb->prefix, $charset_collate) );
-		error_log(">> create member untis");
 		dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
+		error_log(">> create schema done");
 	}
 
 	function createMembers($prefix, $charset_collate) {
