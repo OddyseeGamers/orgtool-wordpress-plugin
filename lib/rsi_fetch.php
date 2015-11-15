@@ -124,7 +124,7 @@ function insertOrUpdate($user) {
 		$wpdb->update($table_name, $user, array( 'handle' => $user["handle"]));
 		
 	} else {
-//		error_log("insert " . $user["handle"] . " | " . $user["name"]);
+		error_log("insert " . $user["handle"] . " | " . $user["name"]);
 		$wpdb->insert($table_name, $user);
 	}
 }
