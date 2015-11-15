@@ -84,6 +84,8 @@ class OrgtoolPlugin {
 		$charset_collate = $wpdb->get_charset_collate();
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
+		error_log(">> ceate schame");
+
 		dbDelta( self::createMembers($charset_collate) );
 		dbDelta( self::createUnits($charset_collate) );
 		dbDelta( self::createUnitTypes($charset_collate) );
@@ -228,7 +230,7 @@ class OrgtoolPlugin {
 
 
 	function ot_activation() {
-		error_log("activate");
+		error_log(">> ot_activate");
 		self::createSchema();
 		self::fetchAll();
 
@@ -239,7 +241,7 @@ class OrgtoolPlugin {
 	}
 
 	function ot_deactivation() {
-		error_log("deactivate");
+		error_log(">> ot_deactivate");
 //         self::remove_cap();
 //         self::uninstall();
 	}
