@@ -3,13 +3,13 @@
 Plugin Name: Org Tool Plugin
 Plugin URI: http://oddysee.org
 Description: Org Tool Plugin
-Version: 0.1.3
+Version: 0.1.4
 Author: 
 Author URI: 
 License: GPLv2 or later
 */
 
-// @include_once "lib/rsi_user.php";
+@include_once "lib/rsi_fetch.php";
 // @include_once "lib/orgplugin.php";
 @include_once "lib/orgtoolplugin.php";
 
