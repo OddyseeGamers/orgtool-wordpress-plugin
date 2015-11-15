@@ -89,7 +89,8 @@ class OrgtoolPlugin {
 		error_log("members " . sizeof($members));
 		$reversed = array_reverse($members);
 		foreach ($reversed as $idx => $mem) {
-			error_log(" >>>  " . $idx . " = " . $mem["handle"]);
+//             error_log(" >>>  " . $idx . " = " . $mem["handle"]);
+			insertOrUpdate($mem);
 		}
 	}
 
