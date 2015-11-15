@@ -107,12 +107,12 @@ function insertOrUpdate($user) {
 
 	if ($wp_id) {
 		$user["wp_id"] = $wp_ip;
-//         error_log(" handle set: " . $handle . " | " . $user_id );
-		$tz = (int)$wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$wp_id and name=\"timezone\"");
+		error_log(" handle : " . $handle . "  found for user " . $wp_id );
+		$tz = $wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$wp_id and name=\"timezone\"");
 //         error_log(">>>> TIMEZONE " . $tz);
 //         error_log(">>>> wp id " . $user_id);
 		if ($tz) {
-			$user["timezone"] = $tz;
+			$user["timezone"] = (int)$tz;
 		}
 	}
 
