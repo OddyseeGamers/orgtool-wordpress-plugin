@@ -18,6 +18,7 @@ class OrgtoolPlugin {
 		$table_name = $prefix . "ot_member";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
+		  wp_id int(11) DEFAULT NULL,
 		  name tinytext NOT NULL,
 		  handle tinytext NOT NULL,
 		  avatar varchar(255) DEFAULT '' NOT NULL,

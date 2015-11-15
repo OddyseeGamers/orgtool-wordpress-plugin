@@ -103,14 +103,17 @@ function insertOrUpdate($user) {
 //     $wp_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
 //     error_log(">>>> TIMEZONE " . $tz);
 
-	$user_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
+	$wp_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
 
-	if ($user_id) {
-		error_log(" handle set: " . $handle . " | " . $user_id );
+	if ($wp_id) {
+		$user["wp_id"] = $wp_ip;
+//         error_log(" handle set: " . $handle . " | " . $user_id );
 		$tz = (int)$wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$user_id and name=\"timezone\"");
-		error_log(">>>> TIMEZONE " . $tz);
-		error_log(">>>> wp id " . $user_id);
-//         $user["timezone"] = $tz;
+//         error_log(">>>> TIMEZONE " . $tz);
+//         error_log(">>>> wp id " . $user_id);
+		if $($tz) {
+			$user["timezone"] = $tz;
+		}
 	}
 
 	$table_name = $wpdb->prefix . "ot_member";
