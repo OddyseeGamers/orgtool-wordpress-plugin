@@ -111,7 +111,7 @@ function insertOrUpdate($user) {
 		$tz = (int)$wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$user_id and name=\"timezone\"");
 //         error_log(">>>> TIMEZONE " . $tz);
 //         error_log(">>>> wp id " . $user_id);
-		if $($tz) {
+		if ($tz) {
 			$user["timezone"] = $tz;
 		}
 	}
