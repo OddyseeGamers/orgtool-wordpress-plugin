@@ -3,7 +3,7 @@
 Plugin Name: Org Tool Plugin
 Plugin URI: http://oddysee.org
 Description: Org Tool Plugin
-Version: 0.1
+Version: 0.1.2
 Author: 
 Author URI: 
 License: GPLv2 or later
