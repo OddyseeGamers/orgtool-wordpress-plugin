@@ -106,7 +106,7 @@ function insertOrUpdate($user) {
 	$wp_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
 
 	if ($wp_id) {
-		$user["wp_id"] = $wp_ip;
+		$user["wp_id"] = $wp_id;
 		error_log(" handle : " . $handle . "  found for user " . $wp_id );
 		$tz = $wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$wp_id and name=\"timezone\"");
 //         error_log(">>>> TIMEZONE " . $tz);
