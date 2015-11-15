@@ -87,7 +87,7 @@ class OrgtoolPlugin {
 	function otp_activation() {
 		error_log(">> ot_activate");
 		self::createSchema();
-		self::fetchAll();
+//         self::fetchAll();
 	}
 
 	function otp_deactivation() {
