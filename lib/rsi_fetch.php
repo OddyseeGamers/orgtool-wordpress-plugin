@@ -1,7 +1,7 @@
 <?php
 
 function fetchFromRSI($orgname, $page) {
-	error_log("refetch MAMENERs");
+	error_log("refetch MAMENERs" . $orgname);
 	$memUrl = 'https://robertsspaceindustries.com/api/orgs/getOrgMembers';
 	$data = array('symbol' => $orgname, 'pagesize' => '255', 'page' => $page );
 
@@ -22,6 +22,7 @@ function fetchFromRSI($orgname, $page) {
 	$ret =  array();
 
 	if (!strlen($str) || $var["success"] != "1" ) {
+		error_log("empty result?");
 		return $ret;
 	}
 
@@ -63,6 +64,7 @@ function fetchFromRSI($orgname, $page) {
 				}
 			}
 
+			error_log("add user");
 			$userarr = array( "name" => $name, 
 								"handle" => $handle,
 								"avatar" => $img, 
