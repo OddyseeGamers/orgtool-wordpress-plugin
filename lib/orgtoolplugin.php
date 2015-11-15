@@ -75,12 +75,17 @@ class OrgtoolPlugin {
 		$done = false;
 		$page = 1;
 		
+		$members = array();
 		do {
 			error_log("fetch " . $page);
 			$res = fetchFromRSI("OODDYSEE", $page++);
-			$done = sizeof($res);
+			$done = (sizeof($res) > 0 ? false : true);
+			if (!$done) {
+				$members = array_merge ($members, $res);
+			}
 			error_log("done " . $done);
 		} while(!$done);
+		$reversed = array_reverse($members);
 	}
 
 
