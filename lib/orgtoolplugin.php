@@ -1,4 +1,5 @@
 <?php
+@include_once "lib/rsi_fetch.php";
 
 class OrgtoolPlugin {
 
