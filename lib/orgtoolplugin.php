@@ -39,7 +39,7 @@ class OrgtoolPlugin {
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
-		  desc text,
+		  description text,
 		  img varchar(255) DEFAULT '' NOT NULL,
 		  type int(11) DEFAULT NULL,
 		  parent int(11) DEFAULT NULL,
@@ -55,7 +55,7 @@ class OrgtoolPlugin {
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
-		  desc text,
+		  description text,
 		  units int(11) DEFAULT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
@@ -71,7 +71,7 @@ class OrgtoolPlugin {
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
- */
+
 
 
 	function fetchAll() {
