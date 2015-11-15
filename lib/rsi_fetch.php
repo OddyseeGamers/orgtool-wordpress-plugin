@@ -1,7 +1,7 @@
 <?php
 
 function fetchFromRSI($orgname, $page) {
-	error_log("refetch " . $orgname . "page" . $page);
+	error_log("fetch " . $orgname . " page " . $page);
 	$memUrl = 'https://robertsspaceindustries.com/api/orgs/getOrgMembers';
 	$data = array('symbol' => $orgname, 'pagesize' => '255', 'page' => $page );
 
@@ -98,17 +98,21 @@ function fetchFromRSI($orgname, $page) {
 function insertOrUpdate($user) {
 	global $wpdb;
 
-	$handle  = $user["handle"];
-/*
+	$handle = $user["handle"];
+
+//     $wp_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
+//     error_log(">>>> TIMEZONE " . $tz);
+
 	$user_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
 
 	if ($user_id) {
 		error_log(" handle set: " . $handle . " | " . $user_id );
 		$tz = (int)$wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$user_id and name=\"timezone\"");
 		error_log(">>>> TIMEZONE " . $tz);
-		$user["timezone"] = $tz;
+		error_log(">>>> wp id " . $user_id);
+//         $user["timezone"] = $tz;
 	}
-*/
+
 	$table_name = $wpdb->prefix . "ot_member";
 	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_name . ' WHERE handle = "' . $user["handle"] .'"');
 
