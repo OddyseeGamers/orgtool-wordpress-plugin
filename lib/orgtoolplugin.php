@@ -229,7 +229,7 @@ class OrgtoolPlugin {
 	}
 
 
-	function ot_activation() {
+	function otp_activation() {
 		error_log(">> ot_activate");
 		self::createSchema();
 		self::fetchAll();
@@ -240,7 +240,7 @@ class OrgtoolPlugin {
 //         self::fetchAll();
 	}
 
-	function ot_deactivation() {
+	function otp_deactivation() {
 		error_log(">> ot_deactivate");
 //         self::remove_cap();
 //         self::uninstall();
