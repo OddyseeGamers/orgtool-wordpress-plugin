@@ -9,7 +9,7 @@ Author URI:
 License: GPLv2 or later
 */
 
-@include_once "lib/rsi_user.php";
+// @include_once "lib/rsi_user.php";
 // @include_once "lib/orgplugin.php";
 @include_once "lib/orgtoolplugin.php";
 

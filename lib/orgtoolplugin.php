@@ -77,10 +77,10 @@ class OrgtoolPlugin {
 	function fetchAll() {
 		$res = true;
 		$page = 1;
-		while($res) {
-			error_log("fetch " . $page);
-			$res = fetchFromRSI("OODDYSEE", $page++);
-		}
+//         while($res) {
+//             error_log("fetch " . $page);
+//             $res = fetchFromRSI("OODDYSEE", $page++);
+//         }
 	}
 
 
