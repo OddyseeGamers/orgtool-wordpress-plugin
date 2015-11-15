@@ -78,7 +78,7 @@ class OrgtoolPlugin {
 		$members = array();
 		do {
 			error_log("fetch " . $page);
-			$res = fetchFromRSI("OODDYSEE", $page++);
+			$res = fetchFromRSI("ODDYSEE", $page++);
 			$done = (sizeof($res) > 0 ? false : true);
 			if (!$done) {
 				$members = array_merge ($members, $res);
