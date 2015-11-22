@@ -13,6 +13,7 @@ class OrgtoolPlugin {
 		dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createShipModels($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createShipManufacturer($wpdb->prefix, $charset_collate) );
+		dbDelta( self::createShipClass($wpdb->prefix, $charset_collate) );
 		error_log(">> create schema done");
 	}
 
@@ -93,6 +94,17 @@ class OrgtoolPlugin {
 
 	function createShipManufacturer($prefix, $charset_collate) {
 		$table_name = $prefix . "ot_ship_manufacturer";
+		return "CREATE TABLE $table_name (
+		  id mediumint(9) NOT NULL AUTO_INCREMENT,
+		  name tinytext NOT NULL,
+		  description text,
+		  img varchar(255) DEFAULT '' NOT NULL,
+		  UNIQUE KEY id (id)
+		) $charset_collate;";
+	}
+
+	function createShipClass($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_ship_class";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,

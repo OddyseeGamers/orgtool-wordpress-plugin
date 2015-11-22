@@ -84,23 +84,31 @@ function fetchShips() {
 function insertOrUpdateShip($ship) {
 	global $wpdb;
 
-	$table_manu = $wpdb->prefix . "ot_ship_manufacturer";
 
 	$mname = $ship['mname'];
 	$mimg = $ship['mimg'];
+	$table_manu = $wpdb->prefix . "ot_ship_manufacturer";
 	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE name = "' . $mname . '"');
 	if(isset($result->id)) {
 		$ship["manufacturer"] = $result->id;
 	} else {
 		$res = $wpdb->insert($table_manu, array( "name" => $mname, "img" => $mimg ));
 		$ship["manufacturer"] = $wpdb->insert_id;
-		error_log("inserted manuf" . $wpdb->insert_id);
 	}
 
+	$sclass = $ship['class'];
+	$table_class = $wpdb->prefix . "ot_ship_class";
+	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_class . ' WHERE name = "' . $sclass . '"');
+	if(isset($result->id)) {
+		$ship["class"] = $result->id;
+	} else {
+		$res = $wpdb->insert($table_class, array( "name" => $sclass));
+		$ship["class"] = $wpdb->insert_id;
+	}
 
 	unset($ship['mname']);
 	unset($ship['mimg']);
-	unset($ship['class']);
+//     unset($ship['class']);
 
 
 	$table_ship = $wpdb->prefix . "ot_ship_model";
