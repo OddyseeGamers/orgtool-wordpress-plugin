@@ -88,12 +88,14 @@ function insertOrUpdateShip($ship) {
 
 	$mname = $ship['mname'];
 	$mimg = $ship['mimg'];
-	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE img = "' . $mimg . '"');
+	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE name = "' . $mname . '"');
 	if(isset($result->id)) {
 		$ship["manufacturer"] = $result->id;
 	} else {
 		$res = $wpdb->insert($table_manu, array( "name" => $mname, "img" => $mimg ));
-		error_log("inserted manuf", $res);
+		$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE name = "' . $mname . '"');
+		$ship["manufacturer"] = $result->id;
+		error_log("inserted manuf", $result->id);
 	}
 
 
