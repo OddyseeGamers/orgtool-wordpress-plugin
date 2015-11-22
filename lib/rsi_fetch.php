@@ -45,7 +45,7 @@ function fetchShipsFromRSI($page) {
 							"length" => $divb->item(1)->nodeValue, 
 							"mass" => $divb->item(2)->nodeValue, 
 							"mimg" => $imgm->item(0)->value,
-							"updated_at" => current_time( 'mysql' ) );
+							"updated_at" => current_time( 'mysql' )
 					   );
 
 		array_push($ret, $shiparr);
