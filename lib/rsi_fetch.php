@@ -75,7 +75,7 @@ function fetchShips() {
 	usort($ships, 'sortByOrder');
 
 	foreach ($ships as $ship) {
-		 insertOrUpdateShip($ship["name"]);
+		 insertOrUpdateShip($ship);
 	}
 }
 
@@ -87,11 +87,11 @@ function insertOrUpdateShip($ship) {
 
 	if(isset($results->id)) {
 		error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
-//         $wpdb->update($table_name, $user, array( 'handle' => $user["handle"]));
+		$wpdb->update($table_name, $ship, array( 'id' => $ship["id"]));
 		
 	} else {
 		error_log("ship insert " . $ship["id"] . " | " . $ship["name"]);
-//         $wpdb->insert($table_name, $user);
+		$wpdb->insert($table_name, $ship);
 	}
 }
 
