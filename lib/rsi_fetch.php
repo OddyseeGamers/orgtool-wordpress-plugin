@@ -86,7 +86,7 @@ function insertOrUpdateShip($ship) {
 
 	$table_manu = $wpdb->prefix . "ot_ship_manufacturer";
 
-	$mname = $ship['nmane'];
+	$mname = $ship['mnane'];
 	$mimg = $ship['mimg'];
 	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE img = "' . $mimg . '"');
 	if(isset($result->id)) {
