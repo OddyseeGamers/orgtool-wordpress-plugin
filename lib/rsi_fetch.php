@@ -93,9 +93,8 @@ function insertOrUpdateShip($ship) {
 		$ship["manufacturer"] = $result->id;
 	} else {
 		$res = $wpdb->insert($table_manu, array( "name" => $mname, "img" => $mimg ));
-		$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE name = "' . $mname . '"');
-		$ship["manufacturer"] = $result->id;
-		error_log("inserted manuf", $result->id);
+		$ship["manufacturer"] = $wpdb->insert_id;
+		error_log("inserted manuf", $wpdb->insert_id);
 	}
 
 
