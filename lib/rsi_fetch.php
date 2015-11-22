@@ -86,6 +86,7 @@ function insertOrUpdateShip($ship) {
 	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_name . ' WHERE id = ' . $ship["id"]);
 
 	unset($ship['mimg']);
+	unset($ship['class']);
 	if(isset($results->id)) {
 		error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
 		$wpdb->update($table_name, $ship, array( 'id' => $ship["id"]));

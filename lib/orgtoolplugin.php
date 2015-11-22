@@ -12,6 +12,7 @@ class OrgtoolPlugin {
 		dbDelta( self::createUnitTypes($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createShipModels($wpdb->prefix, $charset_collate) );
+		dbDelta( self::createShipManufacturer($wpdb->prefix, $charset_collate) );
 		error_log(">> create schema done");
 	}
 
@@ -79,13 +80,24 @@ class OrgtoolPlugin {
 		  img varchar(255) DEFAULT '' NOT NULL,
 		  crew int(11) DEFAULT NULL,
 		  length float DEFAULT NULL,
-		  mass text,
+		  mass int,
 		  updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		  manufacturer int(11) DEFAULT NULL,
 		  class int(11) DEFAULT NULL,
 		  type int(11) DEFAULT NULL,
 		  roles int(11) DEFAULT NULL,
 		  ships int(11) DEFAULT NULL,
+		  UNIQUE KEY id (id)
+		) $charset_collate;";
+	}
+
+	function createShipManufacturer($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_ship_manufacturer";
+		return "CREATE TABLE $table_name (
+		  id mediumint(9) NOT NULL AUTO_INCREMENT,
+		  name int(11) DEFAULT NULL,
+		  description text,
+		  img varchar(255) DEFAULT '' NOT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
