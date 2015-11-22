@@ -93,11 +93,11 @@ function insertOrUpdateShip($ship) {
 		$ship["manufacturer"] = $result->id;
 	} else {
 		$res = $wpdb->insert($table_manu, array( "name" => $mname, "img" => $mimg ));
-		error_log("inserted manuf", $res->id);
+		error_log("inserted manuf", $res);
 	}
 
 
-	unset($ship['nmane']);
+	unset($ship['mname']);
 	unset($ship['mimg']);
 	unset($ship['class']);
 
