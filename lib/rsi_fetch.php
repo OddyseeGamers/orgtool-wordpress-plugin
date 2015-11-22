@@ -1,6 +1,102 @@
 <?php
 
-function fetchFromRSI($orgname, $page) {
+function fetchShipsFromRSI($page) {
+	error_log("fetching page " . $page);
+	$memUrl = 'https://robertsspaceindustries.com/api/store/getShips';
+	$data = array('storefront' => 'pledge', 'pagesize' => '255', 'page' => $page );
+
+	// use key 'http' even if you send the request to https://...
+	$options = array(
+		'http' => array(
+			'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+			'method'  => 'POST',
+			'content' => http_build_query($data),
+		),
+	);
+	$context  = stream_context_create($options);
+	$result = file_get_contents($memUrl, false, $context);
+	$var = json_decode($result, true);
+	$str = $var["data"]["html"];
+
+	$ret =  array();
+	if ($var["success"] != "1" || !strlen($str)) {
+		return $ret;
+	}
+
+	$DOM = new DOMDocument;
+	$DOM->loadHTML('<?xml encoding="utf-8" ?>' . $str);
+	$xpath = new DomXPath($DOM);
+	$items = $xpath->query('//li[@class="ship-item"]');
+	foreach ($items as $idx => $item) {
+		$id = $xpath->query("@data-ship-id", $item);
+		$divc = $xpath->query('./div[@class="center"]', $item)->item(0);
+		$img = $xpath->query("./img/@src", $divc);
+		$name = $xpath->query("./a[@class='filet']/span[contains(concat(' ', normalize-space(@class), ' '), name)]", $divc);
+		$temp = split(' - ', $name->item(0)->nodeValue);
+
+		$divb = $xpath->query("./div[contains(concat(' ', normalize-space(@class), ' '), bottom)]/span/span", $item);
+		$imgm = $xpath->query("./div[contains(concat(' ', normalize-space(@class), ' '), bottom)]/span/img/@src", $item);
+
+		$shiparr = array( "id" => $id->item(0)->value, 
+							"name" => $temp[0],
+							"class" => $temp[1],
+							"img" => $img->item(0)->value, 
+							"crew" => $divb->item(0)->nodeValue, 
+							"length" => $divb->item(1)->nodeValue, 
+							"mass" => $divb->item(2)->nodeValue, 
+							"mimg" => $imgm->item(0)->value,
+							"updated_at" => current_time( 'mysql' ) );
+					   );
+
+		array_push($ret, $shiparr);
+	}
+
+
+	return $ret;
+}
+
+function sortByOrder($a, $b) {
+	return $a['id'] - $b['id'];
+}
+
+
+function fetchShips() {
+	$done = false;
+	$page = 1;
+	$ships = array();
+	do {
+		$res = fetchShipsFromRSI($page++);
+		$done = (sizeof($res) > 0 ? false : true);
+		if (!$done) {
+			$ships = array_merge ($ships, $res);
+		}
+	} while(!$done);
+
+	usort($ships, 'sortByOrder');
+
+	foreach ($ships as $ship) {
+		 insertOrUpdateShip($ship["name"]);
+	}
+}
+
+function insertOrUpdateShip($ship) {
+	global $wpdb;
+
+	$table_name = $wpdb->prefix . "ot_ship_model";
+	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_name . ' WHERE id = ' . $ship["id"]);
+
+	if(isset($results->id)) {
+		error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
+//         $wpdb->update($table_name, $user, array( 'handle' => $user["handle"]));
+		
+	} else {
+		error_log("ship insert " . $ship["id"] . " | " . $ship["name"]);
+//         $wpdb->insert($table_name, $user);
+	}
+}
+
+
+function fetchMembersFromRSI($orgname, $page) {
 	error_log("fetch " . $orgname . " page " . $page);
 	$memUrl = 'https://robertsspaceindustries.com/api/orgs/getOrgMembers';
 	$data = array('symbol' => $orgname, 'pagesize' => '255', 'page' => $page );
@@ -126,6 +222,27 @@ function insertOrUpdate($user) {
 	} else {
 		error_log("insert " . $user["handle"] . " | " . $user["name"]);
 		$wpdb->insert($table_name, $user);
+	}
+}
+
+function fetchMembers() {
+	$done = false;
+	$page = 1;
+	
+	$members = array();
+	do {
+		$res = fetchMembersFromRSI("ODDYSEE", $page++);
+		$done = (sizeof($res) > 0 ? false : true);
+		if (!$done) {
+			$members = array_merge ($members, $res);
+		}
+	} while(!$done);
+
+	error_log("members " . sizeof($members));
+	$reversed = array_reverse($members);
+	foreach ($reversed as $mem) {
+//             error_log(" >>>  " . $idx . " = " . $mem["handle"]);
+		insertOrUpdate($mem);
 	}
 }
 

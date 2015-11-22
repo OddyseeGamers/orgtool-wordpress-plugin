@@ -11,6 +11,7 @@ class OrgtoolPlugin {
 		dbDelta( self::createUnits($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createUnitTypes($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
+		dbDelta( self::createShipModels($wpdb->prefix, $charset_collate) );
 		error_log(">> create schema done");
 	}
 
@@ -70,29 +71,29 @@ class OrgtoolPlugin {
 		) $charset_collate;";
 	}
 
-
-
-	function fetchAll() {
-		$done = false;
-		$page = 1;
-		
-		$members = array();
-		do {
-			$res = fetchFromRSI("ODDYSEE", $page++);
-			$done = (sizeof($res) > 0 ? false : true);
-			if (!$done) {
-				$members = array_merge ($members, $res);
-			}
-		} while(!$done);
-
-		error_log("members " . sizeof($members));
-		$reversed = array_reverse($members);
-		foreach ($reversed as $idx => $mem) {
-//             error_log(" >>>  " . $idx . " = " . $mem["handle"]);
-			insertOrUpdate($mem);
-		}
+	function createShipModels($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_ship_model";
+		return "CREATE TABLE $table_name (
+		  id mediumint(9) NOT NULL AUTO_INCREMENT,
+		  name tinytext NOT NULL,
+		  img varchar(255) DEFAULT '' NOT NULL,
+		  crew int(11) DEFAULT NULL,
+		  length float DEFAULT NULL,
+		  mass text,
+		  updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		  manufacturer int(11) DEFAULT NULL,
+		  class int(11) DEFAULT NULL,
+		  type int(11) DEFAULT NULL,
+		  roles int(11) DEFAULT NULL,
+		  ships int(11) DEFAULT NULL,
+		  UNIQUE KEY id (id)
+		) $charset_collate;";
 	}
 
+	function fetchAll() {
+		fetchShips();
+//         fetchMembers();
+	}
 
 	function otp_activation() {
 		error_log(">> ot_activate");
