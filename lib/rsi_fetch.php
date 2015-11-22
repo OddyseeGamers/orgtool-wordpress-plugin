@@ -88,7 +88,7 @@ function insertOrUpdateShip($ship) {
 
 	$mname = $ship['nmane'];
 	$mimg = $ship['mimg'];
-	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE img = "' . $mimg . "\n");
+	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE img = "' . $mimg . '"');
 	if(isset($result->id)) {
 		$ship["manufacturer"] = $result->id;
 	} else {
@@ -103,7 +103,7 @@ function insertOrUpdateShip($ship) {
 
 
 	$table_ship = $wpdb->prefix . "ot_ship_model";
-	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_ship . ' WHERE id = "' . $ship["id"] . "\n");
+	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_ship . ' WHERE id = "' . $ship["id"] . '"');
 
 	if(isset($results->id)) {
 		error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
