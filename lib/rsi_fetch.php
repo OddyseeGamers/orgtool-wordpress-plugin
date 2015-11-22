@@ -36,6 +36,7 @@ function fetchShipsFromRSI($page) {
 
 		$divb = $xpath->query("./div[contains(concat(' ', normalize-space(@class), ' '), bottom)]/span/span", $item);
 		$imgm = $xpath->query("./div[contains(concat(' ', normalize-space(@class), ' '), bottom)]/span/img/@src", $item);
+		$mname = basename($imgm->item(0)->value, ".png");
 
 		$shiparr = array( "id" => $id->item(0)->value, 
 							"name" => $temp[0],
@@ -45,6 +46,7 @@ function fetchShipsFromRSI($page) {
 							"length" => $divb->item(1)->nodeValue, 
 							"mass" => $divb->item(2)->nodeValue, 
 							"mimg" => $imgm->item(0)->value,
+							"mname" => $mname,
 							"updated_at" => current_time( 'mysql' )
 					   );
 
@@ -82,11 +84,27 @@ function fetchShips() {
 function insertOrUpdateShip($ship) {
 	global $wpdb;
 
-	$table_name = $wpdb->prefix . "ot_ship_model";
-	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_name . ' WHERE id = ' . $ship["id"]);
+	$table_manu = $wpdb->prefix . "ot_ship_manufacturer";
 
+	$mname = $ship['nmane'];
+	$mimg = $ship['mimg'];
+	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE img = ' . $mimg);
+	if(isset($result->id)) {
+		$ship["manufacturer"] = $result->id;
+	} else {
+		$res = $wpdb->insert($table_manu, array( "name" => $mname, "img" => $mimg ));
+		error_log("inserted manuf", $res);
+	}
+
+
+	unset($ship['nmane']);
 	unset($ship['mimg']);
 	unset($ship['class']);
+
+
+	$table_ship = $wpdb->prefix . "ot_ship_model";
+	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_ship . ' WHERE id = ' . $ship["id"]);
+
 	if(isset($results->id)) {
 		error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
 		$wpdb->update($table_name, $ship, array( 'id' => $ship["id"]));
