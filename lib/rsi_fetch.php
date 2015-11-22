@@ -86,14 +86,14 @@ function insertOrUpdateShip($ship) {
 
 	$table_manu = $wpdb->prefix . "ot_ship_manufacturer";
 
-	$mname = $ship['mnane'];
+	$mname = $ship['mname'];
 	$mimg = $ship['mimg'];
 	$result = $wpdb->get_row( 'SELECT * FROM ' . $table_manu . ' WHERE img = "' . $mimg . '"');
 	if(isset($result->id)) {
 		$ship["manufacturer"] = $result->id;
 	} else {
 		$res = $wpdb->insert($table_manu, array( "name" => $mname, "img" => $mimg ));
-		error_log("inserted manuf", $res);
+		error_log("inserted manuf", $res->id);
 	}
 
 
@@ -107,11 +107,11 @@ function insertOrUpdateShip($ship) {
 
 	if(isset($results->id)) {
 		error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
-		$wpdb->update($table_name, $ship, array( 'id' => $ship["id"]));
+		$wpdb->update($table_ship, $ship, array( 'id' => $ship["id"]));
 		
 	} else {
 		error_log("ship insert " . $ship["id"] . " | " . $ship["name"]);
-		$wpdb->insert($table_name, $ship);
+		$wpdb->insert($table_ship, $ship);
 	}
 }
 
