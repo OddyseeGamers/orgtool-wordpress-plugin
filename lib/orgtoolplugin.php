@@ -95,7 +95,7 @@ class OrgtoolPlugin {
 		$table_name = $prefix . "ot_ship_manufacturer";
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
-		  name int(11) DEFAULT NULL,
+		  name tinytext NOT NULL,
 		  description text,
 		  img varchar(255) DEFAULT '' NOT NULL,
 		  UNIQUE KEY id (id)
