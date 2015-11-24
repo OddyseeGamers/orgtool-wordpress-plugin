@@ -7,7 +7,8 @@ class JSON_API_Orgtool_Controller {
 	  $table_name = $wpdb->prefix . "ot_member";
 	  $results = $wpdb->get_results('SELECT * FROM ' . $table_name);
 	  error_log(">>> res", $results->length);
-	  return $results;
+//       return $results;
+	  wp_send_json_success($results);
   }
 
 }
