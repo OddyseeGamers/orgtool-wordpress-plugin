@@ -15,6 +15,10 @@ require_once(dirname(__FILE__) . "/lib/orgtoolplugin.php");
 register_activation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_activation' ) );
 register_deactivation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_deactivation' ));
 
+add_action( 'json_api', function( $controller, $method ) {
+    header( "Access-Control-Allow-Origin: *" );
+}, 10, 2 );
+
 
 function add_orgtool_controller($controllers) {
   $controllers[] = 'orgtool';
