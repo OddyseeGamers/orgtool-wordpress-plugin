@@ -15,4 +15,17 @@ require_once(dirname(__FILE__) . "/lib/orgtoolplugin.php");
 register_activation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_activation' ) );
 register_deactivation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_deactivation' ));
 
+
+function add_orgtool_controller($controllers) {
+  $controllers[] = 'orgtool';
+  return $controllers;
+}
+add_filter('json_api_controllers', 'add_orgtool_controller');
+
+function set_orgtool_controller_path() {
+  return dirname(__FILE__) . '/orgtoolcontroller.php';
+}
+add_filter('json_api_orgtool_controller_path', 'set_orgtool_controller_path');
+
+
 ?>

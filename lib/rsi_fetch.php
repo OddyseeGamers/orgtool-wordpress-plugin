@@ -84,7 +84,6 @@ function fetchShips() {
 function insertOrUpdateShip($ship) {
 	global $wpdb;
 
-
 	$mname = $ship['mname'];
 	$mimg = $ship['mimg'];
 	$table_manu = $wpdb->prefix . "ot_ship_manufacturer";
@@ -108,8 +107,6 @@ function insertOrUpdateShip($ship) {
 
 	unset($ship['mname']);
 	unset($ship['mimg']);
-//     unset($ship['class']);
-
 
 	$table_ship = $wpdb->prefix . "ot_ship_model";
 	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_ship . ' WHERE id = "' . $ship["id"] . '"');
@@ -189,53 +186,32 @@ function fetchMembersFromRSI($orgname, $page) {
 				}
 			}
 
-//             error_log("add user");
 			$userarr = array( "name" => $name, 
 								"handle" => $handle,
 								"avatar" => $img, 
 								"updated_at" => current_time( 'mysql' ) );
-
-			array_push($ret, $userarr);
-//             $rolearr = array( "role" => $role,
+//								 "role" => $role,
 //                                 "roles" => implode(", ", $roles),
 //                                 "rank" => $rank);
-//             insertOrUpdate($userarr, $rolearr);
-//             insertOrUpdate($userarr);
+
+			array_push($ret, $userarr);
 		} else {
-			// ignore reducted user
 			// error_log("ignore reducted user");
 		}
 	}
 	return $ret;
 }
 
-//           id mediumint(9) NOT NULL AUTO_INCREMENT,
-//           name tinytext NOT NULL,
-//           handle tinytext NOT NULL,
-//           avatar varchar(255) DEFAULT '' NOT NULL,
-//           timezone int(11) DEFAULT NULL,
-//           updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-//           ships int(11) DEFAULT NULL,
-//           units int(11) DEFAULT NULL,
-//           rewards int(11) DEFAULT NULL,
-//           logs int(11) DEFAULT NULL,
-
 function insertOrUpdate($user) {
 	global $wpdb;
 
 	$handle = $user["handle"];
-
-//     $wp_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
-//     error_log(">>>> TIMEZONE " . $tz);
-
 	$wp_id = $wpdb->get_var("select d.user_id from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where name=\"handle\" and value=\"$handle\"");
 
 	if ($wp_id) {
 		$user["wp_id"] = $wp_id;
 		error_log(" handle : " . $handle . "  found for user " . $wp_id );
 		$tz = $wpdb->get_var("select d.value from {$wpdb->prefix}bp_xprofile_fields as f left join {$wpdb->prefix}bp_xprofile_data as d on f.id = d.field_id where d.user_id=$wp_id and name=\"timezone\"");
-//         error_log(">>>> TIMEZONE " . $tz);
-//         error_log(">>>> wp id " . $user_id);
 		if ($tz) {
 			$user["timezone"] = (int)$tz;
 		}
@@ -270,7 +246,6 @@ function fetchMembers() {
 	error_log("members " . sizeof($members));
 	$reversed = array_reverse($members);
 	foreach ($reversed as $mem) {
-//             error_log(" >>>  " . $idx . " = " . $mem["handle"]);
 		insertOrUpdate($mem);
 	}
 }
