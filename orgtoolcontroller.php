@@ -3,9 +3,9 @@
 class JSON_API_Orgtool_Controller {
 
   public function members() {
-    return array(
-      "message" => "Hello, world"
-    );
+	  global $wpdb;
+	  $table_name = $wpdb->prefix . "ot_member";
+	  $results = $wpdb->get_results('SELECT * FROM ' . $table_name);
   }
 
 }
