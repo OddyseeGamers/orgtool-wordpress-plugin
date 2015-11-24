@@ -6,9 +6,15 @@ class JSON_API_Orgtool_Controller {
 	  global $wpdb;
 	  $table_name = $wpdb->prefix . "ot_member";
 	  $results = $wpdb->get_results('SELECT * FROM ' . $table_name);
-	  error_log(">>> res", $results->length);
-//       return $results;
-	  wp_send_json_success($results);
+	  wp_send_json(array('members' => $results));
+  }
+
+
+  public function ship_models() {
+	  global $wpdb;
+	  $table_name = $wpdb->prefix . "ot_ship_model";
+	  $results = $wpdb->get_results('SELECT * FROM ' . $table_name);
+	  wp_send_json(array('ship_models' => $results));
   }
 
 }
