@@ -43,7 +43,7 @@ class OrgtoolPlugin {
 		  description text,
 		  color tinytext NOT NULL,
 		  img varchar(255) DEFAULT '' NOT NULL,
-		  type int(11) DEFAULT NULL,
+		  type tinytext NOT NULL,
 		  parent int(11) DEFAULT NULL,
 		  units int(11) DEFAULT NULL,
 		  ships int(11) DEFAULT NULL,
@@ -117,13 +117,14 @@ class OrgtoolPlugin {
 
 
 	function initFixtures() {
-		$json = file_get_contents("fixtures/units.json");
+//         error_log(">>>>>>> read:" . dirname(__FILE__) . "/../fixtures/units.json");
+		$json = file_get_contents(dirname(__FILE__) . "/../fixtures/units.json");
 		$json_a = json_decode($json, true);
+//		error_log(">>>>>>> unit:" . sizeof($json_a) . " | " . sizeof($json_a["units"]));
 		foreach ($json_a["units"] as $name => $_a) {
 			error_log(">>>>>>> unit:" . $name . " | " . $_a['name']);
 			insertOrUpdateUnit($_a);
 		}
-
 	}
 
 	function fetchAll() {
@@ -141,6 +142,7 @@ class OrgtoolPlugin {
 
 	function otp_deactivation() {
 		error_log(">> ot_deactivate");
+		self::initFixtures();
 	}
 }
 

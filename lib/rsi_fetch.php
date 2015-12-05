@@ -256,6 +256,9 @@ function insertOrUpdateUnit($unit) {
 	$table_unit = $wpdb->prefix . "ot_unit";
 	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_unit . ' WHERE id = "' . $unit["id"] . '"');
 
+	unset($unit['leader_ids']);
+	unset($unit['pilot_ids']);
+
 	if(isset($results->id)) {
 		error_log("unit update " . $unit["id"] . " | " . $unit["name"]);
 		$wpdb->update($table_unit, $unit, array( 'id' => $unit["id"]));
