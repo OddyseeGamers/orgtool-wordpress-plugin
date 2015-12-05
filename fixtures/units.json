@@ -5,38 +5,27 @@
       "name": "Oddysee",
       "type": "org",
       "description": "",
-      "color": "",
-      "leader_ids": [1],
-      "pilot_ids": [],
-      "unit_ids": [2,3,4]
+      "color": ""
     }, {
       "id": 2,
       "name": "Star Citizen",
       "type": "game",
       "description": "BDSSE",
       "color": "#0000CC",
-      "leader_ids": [],
-      "pilot_ids": [],
-      "parent": 1,
-      "unit_ids": []
+      "parent": 1
     }, {
       "id": 3,
       "name": "Ark",
       "type": "game",
       "description": "",
       "color": "#9F0000",
-      "leader_ids": [],
-      "pilot_ids": [],
-      "parent": 1,
-      "unit_ids": []
+      "parent": 1
     }, {
       "id": 4,
       "name": "Dota 2",
       "type": "game",
       "description": "",
       "color": "#005500",
-      "leader_ids": [],
-      "pilot_ids": [],
       "parent": 1
     }, {
       "id": 5,
@@ -44,27 +33,20 @@
       "type": "division",
       "description": "Intelligence",
       "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
-      "unit_ids": [],
       "parent": 2
     }, {
       "id": 6,
       "name": "SOD",
       "type": "division",
       "description": "Strategic Operations Department",
-      "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
+      "color": "#9F0000",
       "parent": 5
     }, {
       "id": 7,
       "name": "LID",
       "type": "division",
       "description": "Logistics And Intelligence Division",
-      "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
+      "color": "#0000CC",
       "parent": 5
     }, {
       "id": 8,
@@ -72,8 +54,6 @@
       "type": "fleet",
       "description": "The 1st Battle Fleet",
       "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
       "parent": 6
     }, {
       "id": 9,
@@ -81,9 +61,6 @@
       "type": "fleet",
       "description": "The 2nd Fleet",
       "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
-      "unit_ids": [],
       "parent": 6
     }, {
       "id": 10,
@@ -91,17 +68,13 @@
       "type": "branch",
       "description": "",
       "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
-      "parent": 6
+      "parent": 7
     }, {
       "id": 11,
       "name": "Trade Logistics",
       "type": "branch",
       "description": "",
       "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
       "parent": 7
     }, {
       "id": 12,
@@ -109,26 +82,20 @@
       "type": "branch",
       "description": "",
       "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
       "parent": 7
     }, {
       "id": 13,
       "name": "Pathfinder",
       "type": "division",
       "description": "",
-      "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
+      "color": "#0055CC",
       "parent": 5
     }, {
       "id": 14,
       "name": "Public Relations",
       "type": "division",
       "description": "",
-      "color": "",
-      "leader_ids": [],
-      "pilot_ids": [],
+      "color": "#005500",
       "parent": 5
     }
   ]
