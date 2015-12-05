@@ -24,6 +24,7 @@ register_deactivation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_deactivation'
 
 add_action( 'json_api', function( $controller, $method ) {
     header( "Access-Control-Allow-Origin: *" );
+	header( "Content-Type: application/json" );
 }, 10, 2 );
 
 
@@ -51,7 +52,7 @@ function my_plugin_menu() {
 }
 
 /** Step 3. */
-function my_plugin_options() {
+function orgtool_options() {
 	if ( !current_user_can( 'manage_options' ) )  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
