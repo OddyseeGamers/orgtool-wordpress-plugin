@@ -24,7 +24,7 @@ class JSON_API_Orgtool_Controller {
 	  $results = $wpdb->get_results('SELECT * FROM ' . $table_name . ' order by id');
 	  foreach($results as $idx => $unit) {
 		  $unit_ids = $wpdb->get_row( 'SELECT id FROM ' . $table_unit . ' WHERE parent = "' . $unit["id"] . '"');
-		  array_push($unit, array('unit_ids' => $unit_ids);
+		  array_push($unit, array('unit_ids' => $unit_ids));
 	  }
 	  wp_send_json(array('units' => $results));
   }
