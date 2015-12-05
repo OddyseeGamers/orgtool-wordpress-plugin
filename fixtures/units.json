@@ -56,7 +56,7 @@
       "color": "",
       "leader_ids": [],
       "pilot_ids": [],
-      "parent": 2
+      "parent": 5
     }, {
       "id": 7,
       "name": "LID",
@@ -65,7 +65,7 @@
       "color": "",
       "leader_ids": [],
       "pilot_ids": [],
-      "parent": 2
+      "parent": 5
     }, {
       "id": 8,
       "name": "1st Fleet",
@@ -74,7 +74,7 @@
       "color": "",
       "leader_ids": [],
       "pilot_ids": [],
-      "parent": 5
+      "parent": 6
     }, {
       "id": 9,
       "name": "2nd Fleet",
@@ -84,7 +84,7 @@
       "leader_ids": [],
       "pilot_ids": [],
       "unit_ids": [],
-      "parent": 5
+      "parent": 6
     }, {
       "id": 10,
       "name": "Tech Salvage",
@@ -102,7 +102,7 @@
       "color": "",
       "leader_ids": [],
       "pilot_ids": [],
-      "parent": 6
+      "parent": 7
     }, {
       "id": 12,
       "name": "Operations",
@@ -111,7 +111,7 @@
       "color": "",
       "leader_ids": [],
       "pilot_ids": [],
-      "parent": 6
+      "parent": 7
     }, {
       "id": 13,
       "name": "Pathfinder",
@@ -120,7 +120,16 @@
       "color": "",
       "leader_ids": [],
       "pilot_ids": [],
-      "parent": 2
+      "parent": 5
+    }, {
+      "id": 14,
+      "name": "Public Relations",
+      "type": "division",
+      "description": "",
+      "color": "",
+      "leader_ids": [],
+      "pilot_ids": [],
+      "parent": 5
     }
   ]
 }

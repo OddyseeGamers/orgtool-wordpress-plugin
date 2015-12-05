@@ -45,11 +45,12 @@ class OrgtoolPlugin {
 		  img varchar(255) DEFAULT '' NOT NULL,
 		  type tinytext NOT NULL,
 		  parent int(11) DEFAULT NULL,
-		  units int(11) DEFAULT NULL,
-		  ships int(11) DEFAULT NULL,
-		  members int(11) DEFAULT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
+
+//           units int(11) DEFAULT NULL,
+//           ships int(11) DEFAULT NULL,
+//           members int(11) DEFAULT NULL,
 	}
 
 	function createUnitTypes($prefix, $charset_collate) {
