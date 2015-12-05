@@ -122,7 +122,7 @@ class OrgtoolPlugin {
 		$json_a = json_decode($json, true);
 //		error_log(">>>>>>> unit:" . sizeof($json_a) . " | " . sizeof($json_a["units"]));
 		foreach ($json_a["units"] as $name => $_a) {
-			error_log(">>>>>>> unit:" . $name . " | " . $_a['name']);
+//             error_log(">>>>>>> unit:" . $name . " | " . $_a['name']);
 			insertOrUpdateUnit($_a);
 		}
 	}

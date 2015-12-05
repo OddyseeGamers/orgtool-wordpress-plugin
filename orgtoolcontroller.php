@@ -22,7 +22,7 @@ class JSON_API_Orgtool_Controller {
           global $wpdb;
           $table_name = $wpdb->prefix . "ot_unit";
           $results = $wpdb->get_results('SELECT * FROM ' . $table_name);
-          wp_send_json(array('unit' => $results);
+          wp_send_json(array('units' => $results));
   }
 }
 
