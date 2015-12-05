@@ -115,15 +115,28 @@ class OrgtoolPlugin {
 		) $charset_collate;";
 	}
 
+
+	function initFixtures() {
+		$json = file_get_contents("fixtures/units.json");
+		$json_a = json_decode($json, true);
+		foreach ($json_a["units"] as $name => $_a) {
+			error_log(">>>>>>> unit:" . $name . " | " . $_a['name']);
+			insertOrUpdateUnit($_a);
+		}
+
+	}
+
 	function fetchAll() {
 		fetchShips();
-//         fetchMembers();
+		fetchMembers();
 	}
+
 
 	function otp_activation() {
 		error_log(">> ot_activate");
 		self::createSchema();
-		self::fetchAll();
+//         self::fetchAll();
+		self::initFixtures();
 	}
 
 	function otp_deactivation() {

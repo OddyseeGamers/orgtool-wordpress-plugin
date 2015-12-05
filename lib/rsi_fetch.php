@@ -202,7 +202,7 @@ function fetchMembersFromRSI($orgname, $page) {
 	return $ret;
 }
 
-function insertOrUpdate($user) {
+function insertOrUpdateMember($user) {
 	global $wpdb;
 
 	$handle = $user["handle"];
@@ -246,9 +246,24 @@ function fetchMembers() {
 	error_log("members " . sizeof($members));
 	$reversed = array_reverse($members);
 	foreach ($reversed as $mem) {
-		insertOrUpdate($mem);
+		insertOrUpdateMember($mem);
 	}
 }
 
+function insertOrUpdateUnit($unit) {
+	global $wpdb;
+
+	$table_unit = $wpdb->prefix . "ot_unit";
+	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_unit . ' WHERE id = "' . $unit["id"] . '"');
+
+	if(isset($results->id)) {
+		error_log("unit update " . $unit["id"] . " | " . $unit["name"]);
+		$wpdb->update($table_unit, $unit, array( 'id' => $unit["id"]));
+		
+	} else {
+		error_log("unit insert " . $unit["id"] . " | " . $unit["name"]);
+		$wpdb->insert($table_unit, $unit);
+	}
+}
 
 ?>
