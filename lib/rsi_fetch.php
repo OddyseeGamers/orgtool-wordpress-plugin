@@ -258,6 +258,7 @@ function insertOrUpdateUnit($unit) {
 
 	unset($unit['leader_ids']);
 	unset($unit['pilot_ids']);
+	unset($unit['unit_ids']);
 
 	if(isset($results->id)) {
 		error_log("unit update " . $unit["id"] . " | " . $unit["name"]);
