@@ -41,6 +41,7 @@ class OrgtoolPlugin {
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
 		  description text,
+		  color tinytext NOT NULL,
 		  img varchar(255) DEFAULT '' NOT NULL,
 		  type int(11) DEFAULT NULL,
 		  parent int(11) DEFAULT NULL,
