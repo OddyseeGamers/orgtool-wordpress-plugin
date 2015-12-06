@@ -23,7 +23,7 @@ register_deactivation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_deactivation'
 // api
 
 add_action( 'json_api', function( $controller, $method ) {
-    header( "Access-Control-Allow-Origin: *" );
+//     header( "Access-Control-Allow-Origin: *" );
 	header( "Content-Type: application/json" );
 }, 10, 2 );
 

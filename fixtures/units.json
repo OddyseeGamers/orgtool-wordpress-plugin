@@ -32,7 +32,7 @@
       "name": "Intel",
       "type": "division",
       "description": "Intelligence",
-      "color": "",
+      "color": "#00CC00",
       "parent": 2
     }, {
       "id": 6,
