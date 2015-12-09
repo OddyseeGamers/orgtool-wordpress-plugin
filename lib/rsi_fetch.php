@@ -270,4 +270,21 @@ function insertOrUpdateUnit($unit) {
 	}
 }
 
+
+function insertOrUpdateUnitType($type) {
+	global $wpdb;
+
+	$table_type = $wpdb->prefix . "ot_unit_type";
+	$results = $wpdb->get_row( 'SELECT * FROM ' . $table_type . ' WHERE id = "' . $type["id"] . '"');
+
+	if(isset($results->id)) {
+		error_log("unit type update " . $type["id"] . " | " . $type["name"]);
+		$wpdb->update($table_type, $type, array( 'id' => $type["id"]));
+		
+	} else {
+		error_log("unit type insert " . $type["id"] . " | " . $type["name"]);
+		$wpdb->insert($table_type, $type);
+	}
+}
+
 ?>

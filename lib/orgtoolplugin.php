@@ -56,6 +56,7 @@ class OrgtoolPlugin {
 		  name tinytext NOT NULL,
 		  description text,
 		  img text,
+		  order int(11)
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
@@ -114,13 +115,16 @@ class OrgtoolPlugin {
 
 
 	function initFixtures() {
-//         error_log(">>>>>>> read:" . dirname(__FILE__) . "/../fixtures/units.json");
 		$json = file_get_contents(dirname(__FILE__) . "/../fixtures/units.json");
 		$json_a = json_decode($json, true);
-//		error_log(">>>>>>> unit:" . sizeof($json_a) . " | " . sizeof($json_a["units"]));
 		foreach ($json_a["units"] as $name => $_a) {
-//             error_log(">>>>>>> unit:" . $name . " | " . $_a['name']);
 			insertOrUpdateUnit($_a);
+		}
+
+		$json = file_get_contents(dirname(__FILE__) . "/../fixtures/unit_types.json");
+		$json_a = json_decode($json, true);
+		foreach ($json_a["unit_types"] as $name => $_a) {
+			insertOrUpdateUnitType($_a);
 		}
 	}
 
