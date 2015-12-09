@@ -35,12 +35,19 @@ class Orgtool_API_Unit  {
 	}
 
 	public function get_unit($id, $details = true) {
-
 		global $wpdb;
 		$id = (int) $id;
 		$table_name = $wpdb->prefix . "ot_unit";
 		$searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
 		$unit = $wpdb->get_row($searchsql);
+
+    if ( null !== $unit ) {
+      if ($details) {
+        return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
+      } else {
+        return array('units': '' );
+      }
+    }
 
 		if ($details) {
 			$sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $id;
@@ -72,12 +79,13 @@ class Orgtool_API_Unit  {
 
 	public function update_unit( $id, $data = "", $_headers = array() ) {
 		$id = (int) $id;
-
 		$unit = $this->get_unit( $id, false );
-/*
-		if ( empty( $id ) || empty( $unit['id'] ) ) {
-			return new WP_Error( 'json_post_invalid_id', __( 'Invalid post ID.' ), array( 'status' => 404 ) );
+
+		if ( empty( $id ) || empty( $unit->id ) ) {
+			return new WP_Error( 'error', __( 'unit not found 3 '), array( 'status' => 404 ) );
 		}
+
+/*
 		if ( isset( $_headers['IF_UNMODIFIED_SINCE'] ) ) {
 			// As mandated by RFC2616, we have to check all of RFC1123, RFC1036
 			// and C's asctime() format (and ignore invalid headers)
@@ -105,12 +113,13 @@ class Orgtool_API_Unit  {
 		$unit = $this->get_unit( $id , false);
 
 		if ( empty( $id ) || empty( $unit->id ) ) {
-			return new WP_Error( 'json_post_invalid_id', __( 'Invalid post ID: ' . $id . " | " . $unit->id), array( 'status' => 404 ) );
+			return new WP_Error( 'error', __( 'unit not found 2 '), array( 'status' => 404 ) );
 		}
 		global $wpdb;
 		$table_name = $wpdb->prefix . "ot_unit";
 		$res = $wpdb->delete($table_name, array('id' => $id));
 	}
+
 }
 
 

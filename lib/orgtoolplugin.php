@@ -24,7 +24,7 @@ class OrgtoolPlugin {
 		  wp_id int(11) DEFAULT NULL,
 		  name tinytext NOT NULL,
 		  handle tinytext NOT NULL,
-		  avatar varchar(255) DEFAULT '' NOT NULL,
+		  avatar text,
 		  timezone int(11) DEFAULT NULL,
 		  updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		  ships int(11) DEFAULT NULL,
@@ -42,15 +42,11 @@ class OrgtoolPlugin {
 		  name tinytext NOT NULL,
 		  description text,
 		  color tinytext,
-		  img varchar(255) DEFAULT '',
+		  img text,
 		  type tinytext,
 		  parent int(11) DEFAULT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
-
-//           units int(11) DEFAULT NULL,
-//           ships int(11) DEFAULT NULL,
-//           members int(11) DEFAULT NULL,
 	}
 
 	function createUnitTypes($prefix, $charset_collate) {
@@ -59,7 +55,7 @@ class OrgtoolPlugin {
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
 		  description text,
-		  units int(11) DEFAULT NULL,
+		  img text,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
@@ -80,7 +76,7 @@ class OrgtoolPlugin {
 		return "CREATE TABLE $table_name (
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
-		  img varchar(255) DEFAULT '' NOT NULL,
+		  img text,
 		  crew int(11) DEFAULT NULL,
 		  length float DEFAULT NULL,
 		  mass int,
@@ -100,7 +96,7 @@ class OrgtoolPlugin {
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
 		  description text,
-		  img varchar(255) DEFAULT '' NOT NULL,
+		  img text,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
@@ -111,7 +107,7 @@ class OrgtoolPlugin {
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  name tinytext NOT NULL,
 		  description text,
-		  img varchar(255) DEFAULT '' NOT NULL,
+		  img text,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
