@@ -22,37 +22,20 @@ register_deactivation_hook( __FILE__, array( 'OrgtoolPlugin', 'otp_deactivation'
 /////////////////////////////////////////////////
 // api
 
-add_action( 'json_api', function( $controller, $method ) {
-//     header( "Access-Control-Allow-Origin: *" );
-	header( "Content-Type: application/json" );
-}, 10, 2 );
-
-
-function add_orgtool_controller($controllers) {
-  $controllers[] = 'orgtool';
-  return $controllers;
-}
-add_filter('json_api_controllers', 'add_orgtool_controller');
-
-function set_orgtool_controller_path() {
-  return dirname(__FILE__) . '/orgtoolcontroller.php';
-}
-add_filter('json_api_orgtool_controller_path', 'set_orgtool_controller_path');
-
 function orgtool_api_init() {
 	global $orgtool_api_unit;
 
-	require_once(dirname(__FILE__) . "/lib/controllers/unit_controller.php");
+	header( "Access-Control-Allow-Origin: *" );
+	header( "Access-Control-Allow-Headers: Content-Type");
+	header( "Access-Control-Expose-Headers: Content-Type");
+	header( "Content-Type: application/json" );
 
-     header( "Access-Control-Allow-Origin: *" );
-	 header( "Access-Control-Allow-Headers: Content-Type");
-//      header( "Access-Control-Expose-Headers: content-type");
-     header( "Content-Type: application/json" );
+	require_once(dirname(__FILE__) . "/lib/controllers/unit_controller.php");
 
 	$orgtool_api_unit = new Orgtool_API_Unit();
 	add_filter( 'json_endpoints', array( $orgtool_api_unit, 'register_routes' ) );
 }
-add_action( 'wp_json_server_before_serve', 'myplugin_api_init' );
+add_action( 'wp_json_server_before_serve', 'orgtool_api_init' );
 
 
 /////////////////////////////////////////////////
