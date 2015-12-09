@@ -3,97 +3,97 @@
     {
       "id": 1,
       "name": "Oddysee",
-      "type": "org",
+      "type": 1,
       "description": "",
       "color": ""
     }, {
       "id": 2,
       "name": "Star Citizen",
-      "type": "game",
+      "type": 2,
       "description": "BDSSE",
       "color": "#0000CC",
       "parent": 1
     }, {
       "id": 3,
       "name": "Ark",
-      "type": "game",
+      "type": 2,
       "description": "",
       "color": "#9F0000",
       "parent": 1
     }, {
       "id": 4,
       "name": "Dota 2",
-      "type": "game",
+      "type": 2,
       "description": "",
       "color": "#005500",
       "parent": 1
     }, {
       "id": 5,
       "name": "Intel",
-      "type": "division",
+      "type": 3,
       "description": "Intelligence",
       "color": "#00CC00",
       "parent": 2
     }, {
       "id": 6,
       "name": "SOD",
-      "type": "division",
+      "type": 3,
       "description": "Strategic Operations Department",
       "color": "#9F0000",
       "parent": 5
     }, {
       "id": 7,
       "name": "LID",
-      "type": "division",
+      "type": 3,
       "description": "Logistics And Intelligence Division",
       "color": "#0000CC",
       "parent": 5
     }, {
       "id": 8,
       "name": "1st Fleet",
-      "type": "fleet",
+      "type": 5,
       "description": "The 1st Battle Fleet",
       "color": "",
       "parent": 6
     }, {
       "id": 9,
       "name": "2nd Fleet",
-      "type": "fleet",
+      "type": 5,
       "description": "The 2nd Fleet",
       "color": "",
       "parent": 6
     }, {
       "id": 10,
       "name": "Tech Salvage",
-      "type": "branch",
+      "type": 4,
       "description": "",
       "color": "",
       "parent": 7
     }, {
       "id": 11,
       "name": "Trade Logistics",
-      "type": "branch",
+      "type": 4,
       "description": "",
       "color": "",
       "parent": 7
     }, {
       "id": 12,
       "name": "Operations",
-      "type": "branch",
+      "type": 4,
       "description": "",
       "color": "",
       "parent": 7
     }, {
       "id": 13,
       "name": "Pathfinder",
-      "type": "division",
+      "type": 3,
       "description": "",
       "color": "#0055CC",
       "parent": 5
     }, {
       "id": 14,
       "name": "Public Relations",
-      "type": "division",
+      "type": 3,
       "description": "",
       "color": "#005500",
       "parent": 5

@@ -56,7 +56,7 @@ class OrgtoolPlugin {
 		  name tinytext NOT NULL,
 		  description text,
 		  img text,
-		  order int(11)
+		  ordering int(11),
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}

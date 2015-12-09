@@ -4,44 +4,43 @@
       "id": 1,
       "name": "org",
       "description": "Org",
-      "order": 1,
+      "ordering": 1,
       "img": ""
     }, {
       "id": 2,
       "name": "game",
       "description": "Games",
-      "order": 2,
+      "ordering": 2,
       "img": ""
     }, {
       "id": 3,
       "name": "division",
       "description": "Devision",
-      "order": 3,
+      "ordering": 3,
       "img": ""
     }, {
       "id": 4,
       "name": "branch",
       "description": "Games",
-      "order": 4,
+      "ordering": 4,
       "img": ""
     }, {
       "id": 5,
       "name": "fleet",
       "description": "Games",
-      "order": 5,
+      "ordering": 5,
       "img": ""
-    }, {
     }, {
       "id": 6,
       "name": "unit",
       "description": "Unit",
-      "order": 6,
+      "ordering": 7,
       "img": ""
     }, {
       "id": 7,
       "name": "squadron",
       "description": "Squadron",
-      "order": 7,
+      "ordering": 7,
       "img": ""
     }
   ]
