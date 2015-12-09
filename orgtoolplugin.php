@@ -39,6 +39,21 @@ function set_orgtool_controller_path() {
 }
 add_filter('json_api_orgtool_controller_path', 'set_orgtool_controller_path');
 
+function orgtool_api_init() {
+	global $orgtool_api_unit;
+
+	require_once(dirname(__FILE__) . "/lib/controllers/unit_controller.php");
+
+     header( "Access-Control-Allow-Origin: *" );
+	 header( "Access-Control-Allow-Headers: Content-Type");
+//      header( "Access-Control-Expose-Headers: content-type");
+     header( "Content-Type: application/json" );
+
+	$orgtool_api_unit = new Orgtool_API_Unit();
+	add_filter( 'json_endpoints', array( $orgtool_api_unit, 'register_routes' ) );
+}
+add_action( 'wp_json_server_before_serve', 'myplugin_api_init' );
+
 
 /////////////////////////////////////////////////
 // admin page
