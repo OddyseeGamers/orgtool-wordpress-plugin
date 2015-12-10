@@ -31,9 +31,12 @@ function orgtool_api_init() {
 	header( "Content-Type: application/json" );
 
 	require_once(dirname(__FILE__) . "/lib/controllers/unit_controller.php");
+	require_once(dirname(__FILE__) . "/lib/controllers/member_controller.php");
 
 	$orgtool_api_unit = new Orgtool_API_Unit();
+	$orgtool_api_member = new Orgtool_API_Ember();
 	add_filter( 'json_endpoints', array( $orgtool_api_unit, 'register_routes' ) );
+	add_filter( 'json_endpoints', array( $orgtool_api_member, 'register_routes' ) );
 }
 add_action( 'wp_json_server_before_serve', 'orgtool_api_init' );
 
