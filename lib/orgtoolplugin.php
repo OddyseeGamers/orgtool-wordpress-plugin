@@ -27,13 +27,13 @@ class OrgtoolPlugin {
 		  avatar text,
 		  timezone int(11) DEFAULT NULL,
 		  updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		  ships int(11) DEFAULT NULL,
-		  units int(11) DEFAULT NULL,
-		  rewards int(11) DEFAULT NULL,
-		  logs int(11) DEFAULT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
+//           ships int(11) DEFAULT NULL,
+//           units int(11) DEFAULT NULL,
+//           rewards int(11) DEFAULT NULL,
+//           logs int(11) DEFAULT NULL,
 
 	function createUnits($prefix, $charset_collate) {
 		$table_name = $prefix . "ot_unit";

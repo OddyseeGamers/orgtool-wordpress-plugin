@@ -78,10 +78,19 @@ class Orgtool_API_Unit  {
       unset($data["members"]);
     }
 
+    $data["parent"] = $data["parent_id"];
+    unset($data["parent_id"]);
+    $data["type"] = $data["type_id"];
+    unset($data["type_id"]);
+
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_unit";
     $res = $wpdb->insert($table_name, $data);
-    return $this->get_unit( $wpdb->insert_id );
+    if (null !== $res) {
+       return $this->get_unit( $wpdb->insert_id );
+    } else {
+      return new WP_Error( 'error', __( 'unit not created' ), array( 'status' => 400 ) );
+    }
   }
 
 
@@ -92,6 +101,11 @@ class Orgtool_API_Unit  {
     if ( empty( $id ) || empty( $unit->id ) ) {
       return new WP_Error( 'error', __( 'unit not found 3 '), array( 'status' => 404 ) );
     }
+
+    $data["parent"] = $data["parent_id"];
+    unset($data["parent_id"]);
+    $data["type"] = $data["type_id"];
+    unset($data["type_id"]);
 
 /*
     if ( isset( $_headers['IF_UNMODIFIED_SINCE'] ) ) {
@@ -113,7 +127,11 @@ class Orgtool_API_Unit  {
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_unit";
     $res = $wpdb->update($table_name, $data, array( 'id' => $id));
-    return $this->get_unit( $id );
+    if (false !== $res ) {
+	    return $this->get_unit( $id );
+	} else {
+      return new WP_Error( 'error', __( 'update unit error ' . $res->last_error), array( 'status' => 404 ) );
+}
   }
 
   public function delete_unit($id, $force = false) {

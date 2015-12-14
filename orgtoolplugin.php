@@ -34,7 +34,7 @@ function orgtool_api_init() {
 	require_once(dirname(__FILE__) . "/lib/controllers/member_controller.php");
 
 	$orgtool_api_unit = new Orgtool_API_Unit();
-	$orgtool_api_member = new Orgtool_API_Ember();
+	$orgtool_api_member = new Orgtool_API_Member();
 	add_filter( 'json_endpoints', array( $orgtool_api_unit, 'register_routes' ) );
 	add_filter( 'json_endpoints', array( $orgtool_api_member, 'register_routes' ) );
 }
