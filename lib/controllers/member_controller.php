@@ -1,19 +1,72 @@
 <?php
 
-class Orgtool_API_Member  {
-  public function register_routes( $routes ) {
-    $routes['/orgtool/members'] = array(
-      array( array( $this, 'get_members'), WP_JSON_Server::READABLE ),
-      array( array( $this, 'create_member'), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
-    );
-    $routes['/orgtool/members/(?P<id>\d+)'] = array(
-      array( array( $this, 'get_member'), WP_JSON_Server::READABLE ),
-      array( array( $this, 'update_member'), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON ),
-      array( array( $this, 'delete_member'), WP_JSON_Server::DELETABLE ),
-    );
+class Orgtool_API_Member extends WP_REST_Controller
+{
 
-    return $routes;
-  }
+	private $namespace = 'orgtool';
+	private $base = 'members';
+
+//     public function __construct() {
+//     }
+
+	/**
+	 * Register the routes for the objects of the controller.
+	 */
+	public function register_routes() {
+
+		//$base = $this->get_post_type_base( $this->post_type );
+		//$base = $this->type;
+
+		register_rest_route($this->namespace, '/' . $this->base, array(
+			array(
+				'methods'         => WP_REST_Server::READABLE,
+				'callback'        => array( $this, 'get_members' ),
+				'permission_callback' => array( $this, 'get_members_permissions_check' ),
+			),
+//			array(
+//				'methods'         => WP_REST_Server::CREATABLE,
+//				'callback'        => array( $this, 'create_unit' ),
+//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//			),
+		) );
+		register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
+			array(
+				'methods'         => WP_REST_Server::READABLE,
+				'callback'        => array( $this, 'get_member' ),
+				'permission_callback' => array( $this, 'get_members_permissions_check' ),
+				'args'            => array(
+					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
+				),
+			),
+//			array(
+//				'methods'         => WP_REST_Server::EDITABLE,
+//				'callback'        => array( $this, 'update_unit' ),
+//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//			),
+//			array(
+//				'methods'  => WP_REST_Server::DELETABLE,
+//				'callback' => array( $this, 'delete_unit' ),
+//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//				'args'     => array(
+//					'force'    => array(
+//						'default'      => false,
+//					),
+//				),
+//			),
+		) );
+
+	}
+
+	public function get_members_permissions_check( $request ) {
+/*
+		$post_type = get_post_type_object( $this->post_type );
+
+		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
+			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit these posts in this post type' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+*/
+		return true;
+	}
 
 
   public function get_members($_headers) {
@@ -125,4 +178,3 @@ class Orgtool_API_Member  {
 }
 
 ?>
-
