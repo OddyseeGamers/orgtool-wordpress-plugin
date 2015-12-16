@@ -104,15 +104,16 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
 	}
 	 */
 //     return array('units' => $results);
-	$response = rest_ensure_response( array('ship_model' => $results) );
+	$response = rest_ensure_response( array('ship_models' => $results) );
 //     $response->header( 'Content-Type', "application/json" );
 	return $response;
   }
 
 
-  public function get_ship_model($id, $details = true) {
+  public function get_ship_model($request) {
     global $wpdb;
-    $id = (int) $id;
+	  $id = (int) $request['id'];
+//     $id = (int) $id;
     $table_name = $wpdb->prefix . "ot_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $unit = $wpdb->get_row($searchsql);

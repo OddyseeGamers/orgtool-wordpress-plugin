@@ -23,6 +23,7 @@ require_once(ABSPATH . 'wp-content/plugins/rest-api/plugin.php');
 require_once(dirname(__FILE__) . "/lib/controllers/unit_controller.php");
 require_once(dirname(__FILE__) . "/lib/controllers/member_controller.php");
 require_once(dirname(__FILE__) . "/lib/controllers/ship_model_controller.php");
+require_once(dirname(__FILE__) . "/lib/controllers/ship_manufacturer_controller.php");
 
 /////////////////////////////////////////////////
 // hooks
@@ -48,6 +49,9 @@ function orgtool_api_init() {
 	$controller->register_routes();
 
 	$controller = new Orgtool_API_ShipModel();
+	$controller->register_routes();
+
+	$controller = new Orgtool_API_ShipManufacturer();
 	$controller->register_routes();
 }
 
