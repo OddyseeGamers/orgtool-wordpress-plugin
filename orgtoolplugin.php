@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once(dirname(__FILE__) . "/lib/helper.php");
 require_once(dirname(__FILE__) . "/lib/rsi_fetch.php");
 require_once(dirname(__FILE__) . "/lib/orgtoolplugin.php");
 
@@ -24,6 +25,7 @@ require_once(dirname(__FILE__) . "/lib/controllers/unit_controller.php");
 require_once(dirname(__FILE__) . "/lib/controllers/member_controller.php");
 require_once(dirname(__FILE__) . "/lib/controllers/ship_model_controller.php");
 require_once(dirname(__FILE__) . "/lib/controllers/ship_manufacturer_controller.php");
+require_once(dirname(__FILE__) . "/lib/controllers/ship_controller.php");
 
 /////////////////////////////////////////////////
 // hooks
@@ -52,6 +54,9 @@ function orgtool_api_init() {
 	$controller->register_routes();
 
 	$controller = new Orgtool_API_ShipManufacturer();
+	$controller->register_routes();
+
+	$controller = new Orgtool_API_Ship();
 	$controller->register_routes();
 }
 

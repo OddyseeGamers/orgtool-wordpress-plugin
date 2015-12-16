@@ -74,18 +74,19 @@ class Orgtool_API_Member extends WP_REST_Controller
     $table_name = $wpdb->prefix . "ot_member";
     $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
     $results = $wpdb->get_results($searchsql);
-    /*
+
+    $table_ship = $wpdb->prefix . "ot_ship";
     foreach($results as $member) {
-      $sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $member->id;
-      $member_ids = $wpdb->get_results( $sql);
+      $sql = 'SELECT id FROM ' . $table_ship . ' WHERE member = ' . $member->id;
+      $ship_ids = $wpdb->get_results( $sql);
 
       $ids = array();
-      foreach($member_ids as $p) {
+      foreach($ship_ids as $p) {
         array_push($ids, $p->id);
       }
-      $member->member_ids = $ids;
+      $member->ship_ids = $ids;
     }
-     */
+
     return array('members' => $results);
   }
 
@@ -98,21 +99,23 @@ class Orgtool_API_Member extends WP_REST_Controller
     $member = $wpdb->get_row($searchsql);
 
     if ( null !== $member ) {
-      /*
-      if ($details) {
-        $sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $id;
-        $member_ids = $wpdb->get_results( $sql);
 
-        $ids = array();
-        foreach($member_ids as $p) {
-          array_push($ids, $p->id);
-        }
-        $member->member_ids = $ids;
+      if ($details) {
+		$table_ship = $wpdb->prefix . "ot_ship";
+		$sql = 'SELECT id FROM ' . $table_ship . ' WHERE member = ' . $member->id;
+		  $ship_ids = $wpdb->get_results( $sql);
+
+		  $ids = array();
+		  foreach($ship_ids as $p) {
+			array_push($ids, $p->id);
+		  }
+		  $member->ship_ids = $ids;
+
         return array('member' => $member);
       } else {
         return $member;
       }
-       */
+
         return array('member' => $member);
     } else { 
       return new WP_Error( 'error', __( 'member not found' ), array( 'status' => 404 ) );

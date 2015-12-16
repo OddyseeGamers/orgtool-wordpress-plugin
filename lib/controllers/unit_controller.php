@@ -106,9 +106,9 @@ class Orgtool_API_Unit extends WP_REST_Controller
   }
 
 
-  public function get_unit($id, $details = true) {
+  public function get_unit($request, $details = true) {
     global $wpdb;
-    $id = (int) $id;
+	  $id = (int) $request['id'];
     $table_name = $wpdb->prefix . "ot_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $unit = $wpdb->get_row($searchsql);

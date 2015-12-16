@@ -14,6 +14,7 @@ class OrgtoolPlugin {
 		dbDelta( self::createShipModels($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createShipManufacturer($wpdb->prefix, $charset_collate) );
 		dbDelta( self::createShipClass($wpdb->prefix, $charset_collate) );
+		dbDelta( self::createShip($wpdb->prefix, $charset_collate) );
 		error_log(">> create schema done");
 	}
 
@@ -113,6 +114,16 @@ class OrgtoolPlugin {
 		) $charset_collate;";
 	}
 
+	function createShip($prefix, $charset_collate) {
+		$table_name = $prefix . "ot_ship";
+		return "CREATE TABLE $table_name (
+		  id mediumint(9) NOT NULL AUTO_INCREMENT,
+		  name tinytext,
+		  model int(11) DEFAULT NULL,
+		  member int(11) DEFAULT NULL,
+		  UNIQUE KEY id (id)
+		) $charset_collate;";
+	}
 
 	function initFixtures() {
 		$json = file_get_contents(dirname(__FILE__) . "/../fixtures/units.json");
@@ -133,17 +144,22 @@ class OrgtoolPlugin {
 		fetchMembers();
 	}
 
+	function migrateWP() {
+		insertOrUpdateShips();
+	}
 
 	function otp_activation() {
 		error_log(">> ot_activate");
 		self::createSchema();
 //         self::fetchAll();
-		self::initFixtures();
+//         self::initFixtures();
+//         self::migrateWP();
 	}
 
 	function otp_deactivation() {
 		error_log(">> ot_deactivate");
-		self::initFixtures();
+//         self::initFixtures();
+//         self::migrateWP();
 	}
 }
 

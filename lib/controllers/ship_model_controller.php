@@ -91,18 +91,19 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
     $table_name = $wpdb->prefix . "ot_ship_model";
     $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
     $results = $wpdb->get_results($searchsql);
-	/*
+
+    $table_ship = $wpdb->prefix . "ot_ship";
     foreach($results as $ship_model) {
-      $sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $unit->id;
-      $unit_ids = $wpdb->get_results( $sql);
+      $sql = 'SELECT id FROM ' . $table_ship . ' WHERE model = ' . $ship_model->id;
+      $ship_ids = $wpdb->get_results( $sql);
 
       $ids = array();
-      foreach($unit_ids as $p) {
+      foreach($ship_ids as $p) {
         array_push($ids, $p->id);
       }
-      $ship_model->unit_ids = $ids;
+      $ship_model->ship_ids = $ids;
 	}
-	 */
+
 //     return array('units' => $results);
 	$response = rest_ensure_response( array('ship_models' => $results) );
 //     $response->header( 'Content-Type', "application/json" );
