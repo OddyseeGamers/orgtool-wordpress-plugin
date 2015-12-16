@@ -72,6 +72,7 @@ class Orgtool_API_Member extends WP_REST_Controller
   public function get_members($_headers) {
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_member";
+    $table_member = $wpdb->prefix . "ot_member_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
     $results = $wpdb->get_results($searchsql);
 
@@ -85,16 +86,26 @@ class Orgtool_API_Member extends WP_REST_Controller
         array_push($ids, $p->id);
       }
       $member->ship_ids = $ids;
+
+		$sql = 'SELECT unit FROM ' . $table_member . ' WHERE member = ' . $member->id;
+		$unit_ids = $wpdb->get_results( $sql);
+
+		$ids = array();
+		foreach($unit_ids as $p) {
+			array_push($ids, $p->unit);
+		}
+		$member->unit_ids = $ids;
     }
 
     return array('members' => $results);
   }
 
 
-  public function get_member($id, $details = true) {
+  public function get_member($request, $details = true) {
     global $wpdb;
-    $id = (int) $id;
+	$id = (int) $request['id'];
     $table_name = $wpdb->prefix . "ot_member";
+    $table_member = $wpdb->prefix . "ot_member_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $member = $wpdb->get_row($searchsql);
 
@@ -110,6 +121,15 @@ class Orgtool_API_Member extends WP_REST_Controller
 			array_push($ids, $p->id);
 		  }
 		  $member->ship_ids = $ids;
+
+		$sql = 'SELECT unit FROM ' . $table_member . ' WHERE member = ' . $member->id;
+		$unit_ids = $wpdb->get_results( $sql);
+
+		$ids = array();
+		foreach($unit_ids as $p) {
+			array_push($ids, $p->unit);
+		}
+		$member->unit_ids = $ids;
 
         return array('member' => $member);
       } else {

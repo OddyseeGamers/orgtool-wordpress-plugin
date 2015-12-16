@@ -87,6 +87,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
   public function get_units($_headers) {
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_unit";
+    $table_member = $wpdb->prefix . "ot_member_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
     $results = $wpdb->get_results($searchsql);
     foreach($results as $unit) {
@@ -98,6 +99,16 @@ class Orgtool_API_Unit extends WP_REST_Controller
         array_push($ids, $p->id);
       }
       $unit->unit_ids = $ids;
+
+      $sql = 'SELECT member FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
+      $member_ids = $wpdb->get_results( $sql);
+
+      $ids = array();
+      foreach($member_ids as $p) {
+        array_push($ids, $p->member);
+      }
+      $unit->member_ids = $ids;
+
     }
 //     return array('units' => $results);
 	$response = rest_ensure_response( array('units' => $results) );
@@ -108,28 +119,39 @@ class Orgtool_API_Unit extends WP_REST_Controller
 
   public function get_unit($request, $details = true) {
     global $wpdb;
-	  $id = (int) $request['id'];
+	$id = (int) $request['id'];
     $table_name = $wpdb->prefix . "ot_unit";
+    $table_member = $wpdb->prefix . "ot_member_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $unit = $wpdb->get_row($searchsql);
 
-    if ( null !== $unit ) {
-      if ($details) {
-        $sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $id;
-        $unit_ids = $wpdb->get_results( $sql);
+	if ( null !== $unit ) {
+		if ($details) {
+			$sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $id;
+			$unit_ids = $wpdb->get_results( $sql);
 
-        $ids = array();
-        foreach($unit_ids as $p) {
-          array_push($ids, $p->id);
-        }
-        $unit->unit_ids = $ids;
-        return array('unit' => $unit);
-      } else {
-        return $unit;
-      }
-    } else { 
-      return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
-    }
+			$ids = array();
+			foreach($unit_ids as $p) {
+				array_push($ids, $p->id);
+			}
+			$unit->unit_ids = $ids;
+
+			$sql = 'SELECT member FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
+			$member_ids = $wpdb->get_results( $sql);
+
+			$ids = array();
+			foreach($member_ids as $p) {
+				array_push($ids, $p->member);
+			}
+			$unit->member_ids = $ids;
+
+			return array('unit' => $unit);
+		} else {
+			return $unit;
+		}
+	} else { 
+		return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
+	}
   }
 
 

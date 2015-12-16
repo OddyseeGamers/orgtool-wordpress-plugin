@@ -1,5 +1,9 @@
 <?php
 
+function getOldStruc() {
+	return array(0 => "ODDYSEE", 1 => "LID", 2 => "Operations", 3 => "Trade Logistics", 4 => "Tech Salvage", 5 => "Trading", 6 => "Mining", 7 => "Logistics", 8 => "Base Operations", 9 => "Salvage", 10 => "Boarding", 11 => "Technology", 12 => "Ordinance", 13 => "Operations", 14 => "Intel", 15 => "Public Relations", 16 => "Contracts", 17 => "Racing", 18 => "Recruiting", 19 => "Pathfinder", 20 => "Cartography", 21 => "Navigation", 22 => "Operations", 23 => "SOD", 24 => "1st Fleet", 25 => "Light Fighters", 26 => "Heavy Fighters", 27 => "Assault/ Bombers", 28 => "Recon", 29 => "Gunships/ Transports", 30 => "Capital Ships Command", 31 => "2nd Fleet", 32 => "Light Fighters", 33 => "Heavy Fighters", 34 => "Assault/ Bombers", 35 => "Recon", 36 => "Gunships/ Transports", 37 => "Capital Ships Command", 38 => "Marine Command", 39 => "Marine Squads");
+}
+
 function insertOrUpdateShip($ship) {
 	global $wpdb;
 
@@ -107,20 +111,40 @@ function insertOrUpdateUnitType($type) {
 	}
 }
 
-function insertOrUpdateShips() {
+function importShipsAndAssign() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . "ot_member";
+	$table_model = $wpdb->prefix . "ot_ship_model";
+	$table_unit = $wpdb->prefix . "ot_unit";
+	$table_assin = $wpdb->prefix . "rsi_users";
+
 	$pdata = $wpdb->prefix . "bp_xprofile_data";
 	$pfields = $wpdb->prefix . "bp_xprofile_fields";
 
-	$table_model = $wpdb->prefix . "ot_ship_model";
 
 	$sql = 'SELECT * FROM ' . $table_name . ' order by id';
 	$members = $wpdb->get_results($sql);
 
+	$oldstruc = getOldStruc();
 	foreach($members as $mem) {
+		if (!empty($mem->handle)) {
+			$sql = 'SELECT unit FROM ' . $table_assin . ' where handle = "' . $mem->handle . '"';
+			$unitid = $wpdb->get_var($sql);
+			if ($unitid > 0) {
+				$match = array_key_exists($unitid, $oldstruc);
+				if ($match == 1) {
+					$sql = 'SELECT id FROM ' . $table_unit . ' where name like "%' . $oldstruc[$unitid] . '%"';
+					$newunitid = $wpdb->get_var($sql);
+					if ($newunitid > 0) {
+						insertOrUpdateMemberAssign($mem, $newunitid);
+					} else {
+						error_log("#### old unit " . $unitid . ' not found');
+					}
+				}
+			}
+		}
+/*
 		if (!empty($mem->wp_id)) {
-
 			$sql = 'SELECT fil.id, fil.name, dat.value FROM ' . $pdata . ' as dat ' .
 					'  right join ' . $pfields . ' as fil on fil.id = dat.field_id ' .
 					'  where fil.group_id = 3' .
@@ -131,17 +155,16 @@ function insertOrUpdateShips() {
 				$mod = $wpdb->get_var($sql);
 				if (null !== $mod) {
 					$ship->model_id = $mod;
-//                     error_log(" ---> " . $ship->name . ' -> found: ' . $mod);
 				} else {
 					error_log(" ---> error, unknow ship" . $ship->name);
 				}
 			}
 			
 			if (sizeof($ships) > 0) {
-//                 error_log("updating member wp id " . $mem->wp_id);
 				insertOrUpdateMemberShips($mem, $ships);
 			}
 		}
+ */
 	}
 }
 
@@ -163,6 +186,22 @@ function insertOrUpdateMemberShips($user, $ships) {
 
 		}
 	}
+}
+
+function insertOrUpdateMemberAssign($user, $unitid) {
+	global $wpdb;
+	$table_name = $wpdb->prefix . "ot_member_unit";
+
+	$sql = 'SELECT count(*) FROM ' . $table_name . ' WHERE member = ' . $user->id . ' and unit = ' . $unitid;
+	$count = $wpdb->get_var($sql);
+
+	if ($count == 0) {
+		error_log("---- asign user  " . $user->name . ' to ' . $unitid);
+//         $wpdb->insert($table_name, array("member" => $user->id, "unit" => $unitid));
+	} else {
+		error_log("#### already asigned user  " . $user->name . ' to ' . $unitid);
+	}
+
 }
 
 

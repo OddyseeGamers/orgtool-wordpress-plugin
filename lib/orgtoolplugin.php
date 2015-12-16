@@ -86,11 +86,12 @@ class OrgtoolPlugin {
 		  manufacturer int(11) DEFAULT NULL,
 		  class int(11) DEFAULT NULL,
 		  type int(11) DEFAULT NULL,
-		  roles int(11) DEFAULT NULL,
-		  ships int(11) DEFAULT NULL,
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
+
+//           roles int(11) DEFAULT NULL,
+//           ships int(11) DEFAULT NULL,
 
 	function createShipManufacturer($prefix, $charset_collate) {
 		$table_name = $prefix . "ot_ship_manufacturer";
@@ -144,8 +145,8 @@ class OrgtoolPlugin {
 		fetchMembers();
 	}
 
-	function migrateWP() {
-		insertOrUpdateShips();
+	function importFromWP() {
+		importShipsAndAssign();
 	}
 
 	function otp_activation() {
@@ -153,13 +154,12 @@ class OrgtoolPlugin {
 		self::createSchema();
 //         self::fetchAll();
 //         self::initFixtures();
-//         self::migrateWP();
+//         self::importFromWP();
 	}
 
 	function otp_deactivation() {
 		error_log(">> ot_deactivate");
-//         self::initFixtures();
-//         self::migrateWP();
+//         self::importFromWP();
 	}
 }
 
