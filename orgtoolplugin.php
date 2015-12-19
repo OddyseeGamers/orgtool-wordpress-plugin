@@ -43,6 +43,7 @@ add_action( 'rest_api_init', 'orgtool_api_init', 0 );
 function orgtool_api_init() {
 	header( "Access-Control-Allow-Origin: *" );
 	header( "Access-Control-Allow-Headers: Content-Type");
+	header( "Access-Control-Expose-Headers: Content-Type");
 	header( "Content-Type: application/json" );
 
 	$controller = new Orgtool_API_Unit();

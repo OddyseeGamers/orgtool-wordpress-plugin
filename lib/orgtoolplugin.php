@@ -142,7 +142,7 @@ class OrgtoolPlugin {
 
 	function fetchAll() {
 		fetchShips();
-		fetchMembers();
+//         fetchMembers();
 	}
 
 	function importFromWP() {
@@ -152,7 +152,7 @@ class OrgtoolPlugin {
 	function otp_activation() {
 		error_log(">> ot_activate");
 		self::createSchema();
-//         self::fetchAll();
+		self::fetchAll();
 //         self::initFixtures();
 //         self::importFromWP();
 	}

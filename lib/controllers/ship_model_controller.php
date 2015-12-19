@@ -114,25 +114,13 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
   public function get_ship_model($request) {
     global $wpdb;
 	  $id = (int) $request['id'];
-//     $id = (int) $id;
-    $table_name = $wpdb->prefix . "ot_unit";
+    $table_name = $wpdb->prefix . "ot_ship_model";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $unit = $wpdb->get_row($searchsql);
 
+//     $id = (int) $id;
     if ( null !== $unit ) {
-      if ($details) {
-        $sql = 'SELECT id FROM ' . $table_name . ' WHERE parent = ' . $id;
-        $unit_ids = $wpdb->get_results( $sql);
-
-        $ids = array();
-        foreach($unit_ids as $p) {
-          array_push($ids, $p->id);
-        }
-        $unit->unit_ids = $ids;
-        return array('unit' => $unit);
-      } else {
-        return $unit;
-      }
+		return array('ship_model' => $unit);
     } else { 
       return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
     }
@@ -148,10 +136,10 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
 //       unset($data["members"]);
     }
 
-    $data["parent"] = $data["parent_id"];
-    unset($data["parent_id"]);
-    $data["type"] = $data["type_id"];
-    unset($data["type_id"]);
+//     $data["parent"] = $data["parent_id"];
+//     unset($data["parent_id"]);
+//     $data["type"] = $data["type_id"];
+//     unset($data["type_id"]);
 
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_unit";

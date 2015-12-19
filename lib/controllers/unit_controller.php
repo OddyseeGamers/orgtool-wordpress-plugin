@@ -18,19 +18,19 @@ class Orgtool_API_Unit extends WP_REST_Controller
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_units' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 			),
 			array(
 				'methods'         => WP_REST_Server::CREATABLE,
 				'callback'        => array( $this, 'create_unit' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 			),
 		) );
 		register_rest_route($this->namespace, '/' . $base . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_unit' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 				'args'            => array(
 					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
@@ -38,12 +38,12 @@ class Orgtool_API_Unit extends WP_REST_Controller
 			array(
 				'methods'         => WP_REST_Server::EDITABLE,
 				'callback'        => array( $this, 'update_unit' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 			),
 			array(
 				'methods'  => WP_REST_Server::DELETABLE,
 				'callback' => array( $this, 'delete_unit' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 				'args'     => array(
 					'force'    => array(
 						'default'      => false,
@@ -100,14 +100,14 @@ class Orgtool_API_Unit extends WP_REST_Controller
       }
       $unit->unit_ids = $ids;
 
-      $sql = 'SELECT member FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
+      $sql = 'SELECT id FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
       $member_ids = $wpdb->get_results( $sql);
 
       $ids = array();
       foreach($member_ids as $p) {
-        array_push($ids, $p->member);
+        array_push($ids, $p->id);
       }
-      $unit->member_ids = $ids;
+      $unit->member_unit_ids = $ids;
 
     }
 //     return array('units' => $results);
@@ -120,6 +120,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
   public function get_unit($request, $details = true) {
     global $wpdb;
 	$id = (int) $request['id'];
+
     $table_name = $wpdb->prefix . "ot_unit";
     $table_member = $wpdb->prefix . "ot_member_unit";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
@@ -136,14 +137,14 @@ class Orgtool_API_Unit extends WP_REST_Controller
 			}
 			$unit->unit_ids = $ids;
 
-			$sql = 'SELECT member FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
+			$sql = 'SELECT id FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
 			$member_ids = $wpdb->get_results( $sql);
 
 			$ids = array();
 			foreach($member_ids as $p) {
-				array_push($ids, $p->member);
+				array_push($ids, $p->id);
 			}
-			$unit->member_ids = $ids;
+			$unit->member_unit_ids = $ids;
 
 			return array('unit' => $unit);
 		} else {
@@ -156,51 +157,49 @@ class Orgtool_API_Unit extends WP_REST_Controller
 
 
   public function create_unit($request) {
-	
-	$data = array();
-	
-    if ( ! empty( $request['unit'] ) ) {
-      $data = $request["unit"];
+	// why do I have to do this?? missing arg? WP API borken?
+	$data = json_decode( $request->get_body(), true );
+	if ( ! empty( $data['unit'] ) ) {
+	  $data = $data["unit"];
 //       unset($data["members"]);
-    }
+	}
 
-    $data["parent"] = $data["parent_id"];
-    unset($data["parent_id"]);
-    $data["type"] = $data["type_id"];
-    unset($data["type_id"]);
+//     $data["parent"] = $data["parent_id"];
+//     unset($data["parent_id"]);
+//     $data["type"] = $data["type_id"];
+//     unset($data["type_id"]);
+
 
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_unit";
     $res = $wpdb->insert($table_name, $data);
+
     if (null !== $res) {
-       return $this->get_unit( $wpdb->insert_id );
+//       return array("create ok" => $res, "data" => $data, "inserted id" => $wpdb->insert_id);
+       return $this->get_unit( array("id" => $wpdb->insert_id) );
     } else {
       return new WP_Error( 'error', __( 'unit not created' ), array( 'status' => 400 ) );
     }
   }
 
 
-  public function update_unit($request) {
+  public function update_unit(WP_REST_Request $request) {
 	  $id = (int) $request['id'];
-
-	  $unit = $this->get_unit( $id, false );
+	  $unit = $this->get_unit( array("id" => $id), false );
 
 	  if ( empty( $id ) || empty( $unit->id ) ) {
 		  return new WP_Error( 'error', __( 'unit not found 3 '), array( 'status' => 404 ) );
 	  }
 
-	  $data = array();
-	  $data['name'] = $request['name'];
-	  $data['description'] = $request['description'];
-	  $data['color'] = $request['color'];
-	  $data['img'] = $request['img'];
-	  $data['parent'] = $request['parent_id'];
-	  $data['type'] = $request['type_id'];
-
-//     $data["parent"] = $data["parent_id"];
-//     unset($data["parent_id"]);
-//     $data["type"] = $data["type_id"];
-//     unset($data["type_id"]);
+	  // why do I have to do this??
+	  $data = json_decode( $request->get_body(), true );
+	  if ( ! empty( $data['unit'] ) ) {
+		  $data = $data["unit"];
+	  }
+//       $data["parent"] = $data["parent_id"];
+//       unset($data["parent_id"]);
+//       $data["type"] = $data["type_id"];
+//       unset($data["type_id"]);
 
 /*
     if ( isset( $_headers['IF_UNMODIFIED_SINCE'] ) ) {
@@ -223,7 +222,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
     $table_name = $wpdb->prefix . "ot_unit";
     $res = $wpdb->update($table_name, $data, array( 'id' => $id));
 	if (false !== $res ) {
-		return $this->get_unit( $id );
+		return $this->get_unit( array("id" => $id) );
 	} else {
 		return new WP_Error( 'error', __( 'update unit error ' . $res->last_error), array( 'status' => 404 ) );
 	}
@@ -231,7 +230,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
 
   public function delete_unit($request) {
 	  $id = (int) $request['id'];
-	  $unit = $this->get_unit( $id , false);
+	  $unit = $this->get_unit( array("id" => $id), false);
 
 	  if ( empty( $id ) || empty( $unit->id ) ) {
 		  return new WP_Error( 'error', __( 'unit not found 2 '), array( 'status' => 404 ) );

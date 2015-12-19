@@ -87,14 +87,14 @@ class Orgtool_API_Member extends WP_REST_Controller
       }
       $member->ship_ids = $ids;
 
-		$sql = 'SELECT unit FROM ' . $table_member . ' WHERE member = ' . $member->id;
+		$sql = 'SELECT id FROM ' . $table_member . ' WHERE member = ' . $member->id;
 		$unit_ids = $wpdb->get_results( $sql);
 
 		$ids = array();
 		foreach($unit_ids as $p) {
-			array_push($ids, $p->unit);
+			array_push($ids, $p->id);
 		}
-		$member->unit_ids = $ids;
+		$member->member_unit_ids = $ids;
     }
 
     return array('members' => $results);
@@ -122,14 +122,14 @@ class Orgtool_API_Member extends WP_REST_Controller
 		  }
 		  $member->ship_ids = $ids;
 
-		$sql = 'SELECT unit FROM ' . $table_member . ' WHERE member = ' . $member->id;
+		$sql = 'SELECT id FROM ' . $table_member . ' WHERE member = ' . $member->id;
 		$unit_ids = $wpdb->get_results( $sql);
 
 		$ids = array();
 		foreach($unit_ids as $p) {
-			array_push($ids, $p->unit);
+			array_push($ids, $p->id);
 		}
-		$member->unit_ids = $ids;
+		$member->member_unit_ids = $ids;
 
         return array('member' => $member);
       } else {

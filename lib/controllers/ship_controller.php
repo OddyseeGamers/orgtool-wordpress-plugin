@@ -118,7 +118,7 @@ class Orgtool_API_Ship extends WP_REST_Controller
     $ship = $wpdb->get_row($searchsql);
 
     if ( null !== $ship ) {
-		return $ship;
+		return array("ship" => $ship);
     } else { 
       return new WP_Error( 'error', __( 'ship not found' ), array( 'status' => 404 ) );
     }
