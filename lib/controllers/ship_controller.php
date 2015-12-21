@@ -20,11 +20,11 @@ class Orgtool_API_Ship extends WP_REST_Controller
 				'callback'        => array( $this, 'get_ships' ),
 				'permission_callback' => array( $this, 'get_units_permissions_check' ),
 			),
-//             array(
-//                 'methods'         => WP_REST_Server::CREATABLE,
-//                 'callback'        => array( $this, 'create_ship_model' ),
-//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//             ),
+			array(
+				'methods'         => WP_REST_Server::CREATABLE,
+				'callback'        => array( $this, 'create_ship' ),
+				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+			),
 		) );
 		register_rest_route($this->namespace, '/' . $base . '/(?P<id>[\d]+)', array(
 			array(
@@ -40,37 +40,17 @@ class Orgtool_API_Ship extends WP_REST_Controller
 //                 'callback'        => array( $this, 'update_ship_model' ),
 //                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 //             ),
-//             array(
-//                 'methods'  => WP_REST_Server::DELETABLE,
-//                 'callback' => array( $this, 'delete_ship_model' ),
-//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//                 'args'     => array(
-//                     'force'    => array(
-//                         'default'      => false,
-//                     ),
-//                 ),
-//             ),
-		) );
-
-		/*
-		register_rest_route($this->namespace, '/' . $this->base_type, array(
 			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_unit_types' ),
+				'methods'  => WP_REST_Server::DELETABLE,
+				'callback' => array( $this, 'delete_ship' ),
 				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-			),
-		) );
-		register_rest_route($this->namespace, '/' . $this->base_type . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_unit_type' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-				'args'            => array(
-					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
+				'args'     => array(
+					'force'    => array(
+						'default'      => false,
+					),
 				),
 			),
 		) );
-		 */
 	}
 
 	public function get_units_permissions_check( $request ) {
@@ -123,6 +103,38 @@ class Orgtool_API_Ship extends WP_REST_Controller
       return new WP_Error( 'error', __( 'ship not found' ), array( 'status' => 404 ) );
     }
   }
+
+  public function create_ship($request) {
+	$data = json_decode( $request->get_body(), true );
+	if ( ! empty( $data['ship'] ) ) {
+	  $data = $data["ship"];
+	}
+	
+	// if !member || !model > error...
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . "ot_ship";
+    $res = $wpdb->insert($table_name, $data);
+    if (null !== $res) {
+       return $this->get_ship( array("id" => $wpdb->insert_id ));
+    } else {
+      return new WP_Error( 'error', __( 'ship not created' ), array( 'status' => 400 ) );
+    }
+  }
+
+  public function delete_ship($request) {
+	  $id = (int) $request['id'];
+	  $ship = $this->get_ship( array("id" => $id), false);
+
+	  if ( empty( $id ) || empty( $ship["ship"]->id ) ) {
+		  return new WP_Error( 'error', __( 'ship not found 2 '), array( 'status' => 404 ) );
+	  }
+	  global $wpdb;
+	  $table_name = $wpdb->prefix . "ot_ship";
+	  $res = $wpdb->delete($table_name, array('id' => $id));
+	  return array();
+  }
+
 }
 
 ?>
