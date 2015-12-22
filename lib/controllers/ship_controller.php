@@ -35,11 +35,11 @@ class Orgtool_API_Ship extends WP_REST_Controller
 					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
 			),
-//             array(
-//                 'methods'         => WP_REST_Server::EDITABLE,
-//                 'callback'        => array( $this, 'update_ship_model' ),
-//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//             ),
+			array(
+				'methods'         => WP_REST_Server::EDITABLE,
+				'callback'        => array( $this, 'update_ship' ),
+				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+			),
 			array(
 				'methods'  => WP_REST_Server::DELETABLE,
 				'callback' => array( $this, 'delete_ship' ),
@@ -121,6 +121,27 @@ class Orgtool_API_Ship extends WP_REST_Controller
       return new WP_Error( 'error', __( 'ship not created' ), array( 'status' => 400 ) );
     }
   }
+
+  public function update_ship($request) {
+	  $id = (int) $request['id'];
+	  $ship = $this->get_ship( array("id" => $id), false );
+
+	  if ( empty( $id ) || empty( $ship["ship"]->id ) ) {
+		  return new WP_Error( 'error', __( 'ship not found 3 '), array( 'status' => 404 ) );
+	  }
+
+	  // why do I have to do this??
+	  $data = json_decode( $request->get_body(), true );
+    global $wpdb;
+    $table_name = $wpdb->prefix . "ot_ship";
+    $res = $wpdb->update($table_name, $data, array( 'id' => $id));
+	if (false !== $res ) {
+		return $this->get_ship( array("id" => $id) );
+	} else {
+		return new WP_Error( 'error', __( 'update ship error ' . $res->last_error), array( 'status' => 404 ) );
+	}
+  }
+
 
   public function delete_ship($request) {
 	  $id = (int) $request['id'];
