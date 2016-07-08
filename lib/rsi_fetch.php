@@ -177,10 +177,18 @@ function fetchMembers() {
 	} while(!$done);
 
 	error_log("members " . sizeof($members));
+	return $members;
+
+//     $wpmembers = fetchMembersFromWP();
+
+
+/*
+	error_log("members " . sizeof($members));
 	$reversed = array_reverse($members);
 	foreach ($reversed as $mem) {
 		insertOrUpdateMember($mem);
 	}
+ */
 }
 
 ?>

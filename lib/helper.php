@@ -1,5 +1,44 @@
 <?php
 
+
+
+function mergeWPMembers($rsimembers) {
+	global $wpdb;
+	$sql= "select d.user_id as wp_id, u.name, d.value as handle "
+		. "from wp_users as u "
+		. "left join wp_bp_xprofile_data as d on u.ID = d.user_id "
+		. "where d.field_id = 2";
+	$members = $wpdb->get_results($sql);
+
+	error_log(" >> update user " . sizeof($members));
+
+	$memtbl = $wpdb->prefix . "ot_member";
+	foreach($members as $mem) {
+		$otmem = $wpdb->get_row( 'SELECT * FROM ' . $table_name . ' WHERE wp_id = "' . $mem["wp_id"] .'"');
+
+		error_log(" >> update user " . $mem->wp_id . ', res: ' . sizeof($tomem));
+
+		if(!isset($otmem->wp_id)) {
+			error_log(" >> inser new user " . $mem->wp_id);
+
+//             $ot_id = $wpdb->insert($memtbl, otmem);
+//             $ship["class"] = $wpdb->insert_id;
+		} else {
+			error_log(" >> update user " . $mem->wp_id);
+//             $ship["class"] = $result->id;
+		}
+
+//         $res = $wpdb->update($memtbl, $data, array( 'id' => $id));
+	}
+}
+
+
+
+
+
+
+
+
 function getOldStruc() {
 	return array(0 => "ODDYSEE", 1 => "LID", 2 => "Operations", 3 => "Trade Logistics", 4 => "Tech Salvage", 5 => "Trading", 6 => "Mining", 7 => "Logistics", 8 => "Base Operations", 9 => "Salvage", 10 => "Boarding", 11 => "Technology", 12 => "Ordinance", 13 => "Operations", 14 => "Intel", 15 => "Public Relations", 16 => "Contracts", 17 => "Racing", 18 => "Recruiting", 19 => "Pathfinder", 20 => "Cartography", 21 => "Navigation", 22 => "Operations", 23 => "SOD", 24 => "1st Fleet", 25 => "Light Fighters", 26 => "Heavy Fighters", 27 => "Assault/ Bombers", 28 => "Recon", 29 => "Gunships/ Transports", 30 => "Capital Ships Command", 31 => "2nd Fleet", 32 => "Light Fighters", 33 => "Heavy Fighters", 34 => "Assault/ Bombers", 35 => "Recon", 36 => "Gunships/ Transports", 37 => "Capital Ships Command", 38 => "Marine Command", 39 => "Marine Squads");
 }
