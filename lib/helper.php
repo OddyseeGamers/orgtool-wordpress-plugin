@@ -10,11 +10,11 @@ function mergeWPMembers($rsimembers) {
 		. "where d.field_id = 2";
 	$members = $wpdb->get_results($sql);
 
-	error_log(" >> update user " . sizeof($members));
+	error_log(" >> members found " . sizeof($members));
 
 	$memtbl = $wpdb->prefix . "ot_member";
 	foreach($members as $mem) {
-		$otmem = $wpdb->get_row( 'SELECT * FROM ' . $table_name . ' WHERE wp_id = "' . $mem["wp_id"] .'"');
+		$otmem = $wpdb->get_row( 'SELECT * FROM ' . $memtbl . ' WHERE wp_id = "' . $mem["wp_id"] .'"');
 
 		error_log(" >> update user " . $mem->wp_id . ', res: ' . sizeof($tomem));
 
