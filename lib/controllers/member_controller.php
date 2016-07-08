@@ -3,7 +3,7 @@
 class Orgtool_API_Member extends WP_REST_Controller
 {
 
-	private $namespace = 'orgtool';
+	protected $namespace = 'orgtool';
 	private $base = 'members';
 
 //     public function __construct() {
@@ -73,7 +73,30 @@ class Orgtool_API_Member extends WP_REST_Controller
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_member";
     $table_member = $wpdb->prefix . "ot_member_unit";
-    $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
+//     $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
+
+
+    $searchsql = "select ru.*, temp.wp_id, temp.wp_profile from oddyse5_wp978.wp_ot_member as ru left join ( "
+				. "select d.value as wp_handle, u.ID as wp_id, "
+				. "CONCAT('{', GROUP_CONCAT('\"', d.field_id, '\":\"', d.value, '\"' ORDER BY d.value DESC SEPARATOR ','),'}') as wp_profile "
+				. "FROM oddyse5_wp978.wp_users as u join oddyse5_wp978.wp_bp_xprofile_data as d on u.ID = d.user_id "
+				. "where d.field_id = 2 "
+				. "or d.field_id = 3 "
+				. "or d.field_id > 300 " 
+				. "group by wp_id "
+				. ") as temp on ru.handle = temp.wp_handle "
+				. "union "
+				. "select ru.*, temp.wp_id, temp.wp_profile from oddyse5_wp978.wp_ot_member as ru right join ( "
+				. "select d.value as wp_handle, u.ID as wp_id, "
+				. "CONCAT('{', GROUP_CONCAT('\"', d.field_id, '\":\"', d.value, '\"' ORDER BY d.value DESC SEPARATOR ','),'}') as wp_profile "
+				. "FROM oddyse5_wp978.wp_users as u join oddyse5_wp978.wp_bp_xprofile_data as d on u.ID = d.user_id "
+				. "where d.field_id = 2 "
+				. "or d.field_id = 3 "
+				. "or d.field_id > 300 " 
+				. "group by wp_id "
+				. ") as temp on ru.handle = temp.wp_handle";
+
+
     $results = $wpdb->get_results($searchsql);
 
     $table_ship = $wpdb->prefix . "ot_ship";
@@ -85,7 +108,7 @@ class Orgtool_API_Member extends WP_REST_Controller
       foreach($ship_ids as $p) {
         array_push($ids, $p->id);
       }
-      $member->ship_ids = $ids;
+      $member->ships = $ids;
 
 		$sql = 'SELECT id FROM ' . $table_member . ' WHERE member = ' . $member->id;
 		$unit_ids = $wpdb->get_results( $sql);
@@ -94,7 +117,7 @@ class Orgtool_API_Member extends WP_REST_Controller
 		foreach($unit_ids as $p) {
 			array_push($ids, $p->id);
 		}
-		$member->member_unit_ids = $ids;
+		$member->memberUnits = $ids;
     }
 
     return array('members' => $results);
@@ -120,7 +143,7 @@ class Orgtool_API_Member extends WP_REST_Controller
 		  foreach($ship_ids as $p) {
 			array_push($ids, $p->id);
 		  }
-		  $member->ship_ids = $ids;
+		  $member->ships = $ids;
 
 		$sql = 'SELECT id FROM ' . $table_member . ' WHERE member = ' . $member->id;
 		$unit_ids = $wpdb->get_results( $sql);
@@ -129,7 +152,7 @@ class Orgtool_API_Member extends WP_REST_Controller
 		foreach($unit_ids as $p) {
 			array_push($ids, $p->id);
 		}
-		$member->member_unit_ids = $ids;
+		$member->member_units = $ids;
 
         return array('member' => $member);
       } else {

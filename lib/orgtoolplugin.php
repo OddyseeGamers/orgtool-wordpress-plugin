@@ -122,6 +122,7 @@ class OrgtoolPlugin {
 		  name tinytext,
 		  model int(11) DEFAULT NULL,
 		  member int(11) DEFAULT NULL,
+		  hidden tinyint(1),
 		  UNIQUE KEY id (id)
 		) $charset_collate;";
 	}
@@ -142,7 +143,7 @@ class OrgtoolPlugin {
 
 	function fetchAll() {
 		fetchShips();
-//         fetchMembers();
+		fetchMembers();
 	}
 
 	function importFromWP() {
@@ -151,7 +152,8 @@ class OrgtoolPlugin {
 
 	function otp_activation() {
 		error_log(">> ot_activate");
-		self::createSchema();
+
+//         self::createSchema();
 		self::fetchAll();
 //         self::initFixtures();
 //         self::importFromWP();
@@ -159,6 +161,7 @@ class OrgtoolPlugin {
 
 	function otp_deactivation() {
 		error_log(">> ot_deactivate");
+//         self::fetchAll();
 //         self::importFromWP();
 	}
 }

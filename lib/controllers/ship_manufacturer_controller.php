@@ -2,7 +2,7 @@
 
 class Orgtool_API_ShipManufacturer extends WP_REST_Controller
 {
-	private $namespace = 'orgtool';
+	protected $namespace = 'orgtool';
 	private $base = 'ship_manufacturers';
 
 //     public function __construct() {
@@ -100,7 +100,7 @@ class Orgtool_API_ShipManufacturer extends WP_REST_Controller
       foreach($ship_ids as $p) {
         array_push($ids, $p->id);
       }
-      $manu->ship_ids = $ids;
+      $manu->ships = $ids;
 	}
 
 //     return array('units' => $results);
@@ -128,7 +128,7 @@ class Orgtool_API_ShipManufacturer extends WP_REST_Controller
 		foreach($ship_ids as $p) {
 		  array_push($ids, $p->id);
 		}
-		$manu->ship_ids = $ids;
+		$manu->ships = $ids;
 		return array('ship_manufacturer' => $manu);
 //       } else {
 //         return $manu;

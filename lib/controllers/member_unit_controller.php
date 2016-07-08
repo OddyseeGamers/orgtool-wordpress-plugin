@@ -2,7 +2,7 @@
 
 class Orgtool_API_MemberUnit extends WP_REST_Controller
 {
-	private $namespace = 'orgtool';
+	protected $namespace = 'orgtool';
 	private $base = 'member_units';
 //     private $base_type = 'ship_types';
 

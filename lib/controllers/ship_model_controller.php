@@ -2,9 +2,9 @@
 
 class Orgtool_API_ShipModel extends WP_REST_Controller
 {
-	private $namespace = 'orgtool';
+	protected $namespace = 'orgtool';
 	private $base = 'ship_models';
-	private $base_type = 'ship_types';
+	private $base_class = 'ship_classes';
 
 //     public function __construct() {
 //     }
@@ -52,25 +52,25 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
 //             ),
 		) );
 
-		/*
-		register_rest_route($this->namespace, '/' . $this->base_type, array(
+
+		register_rest_route($this->namespace, '/' . $this->base_class, array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_unit_types' ),
+				'callback'        => array( $this, 'get_ship_classes' ),
 				'permission_callback' => array( $this, 'get_units_permissions_check' ),
 			),
 		) );
-		register_rest_route($this->namespace, '/' . $this->base_type . '/(?P<id>[\d]+)', array(
+		register_rest_route($this->namespace, '/' . $this->base_class . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_unit_type' ),
+				'callback'        => array( $this, 'get_ship_class' ),
 				'permission_callback' => array( $this, 'get_units_permissions_check' ),
 				'args'            => array(
 					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
 			),
 		) );
-		 */
+
 	}
 
 	public function get_units_permissions_check( $request ) {
@@ -101,7 +101,7 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
       foreach($ship_ids as $p) {
         array_push($ids, $p->id);
       }
-      $ship_model->ship_ids = $ids;
+      $ship_model->ships = $ids;
 	}
 
 //     return array('units' => $results);
@@ -216,56 +216,57 @@ class Orgtool_API_ShipModel extends WP_REST_Controller
 
 
   //////////////////////////////////////////////////////////////
-/*
 
-  public function get_unit_types($_headers) {
+  public function get_ship_classes($request) {
     global $wpdb;
-    $table_unit = $wpdb->prefix . "ot_unit";
-    $table_type = $wpdb->prefix . "ot_unit_type";
-    $searchsql = 'SELECT * FROM ' . $table_type . ' order by id';
+    $table_name = $wpdb->prefix . "ot_ship_class";
+    $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
     $results = $wpdb->get_results($searchsql);
 
-    foreach($results as $type) {
-      $sql = 'SELECT id FROM ' . $table_unit . ' WHERE type = ' . $type->id;
-      $unit_ids = $wpdb->get_results($sql);
+    $table_ship = $wpdb->prefix . "ot_ship_model";
+    foreach($results as $ship_class) {
+      $sql = 'SELECT id FROM ' . $table_ship . ' WHERE class = ' . $ship_class->id;
+      $ship_ids = $wpdb->get_results( $sql);
 
       $ids = array();
-      foreach($unit_ids as $p) {
+      foreach($ship_ids as $p) {
         array_push($ids, $p->id);
       }
-      $type->unit_ids = $ids;
-    }
-    return array('unit_types' => $results);
+      $ship_class->ship_models = $ids;
+	}
+
+//     return array('units' => $results);
+	$response = rest_ensure_response( array('ship_classes' => $results) );
+//     $response->header( 'Content-Type', "application/json" );
+	return $response;
   }
 
 
-  public function get_unit_type($id, $details = true) {
+  public function get_ship_class($request) {
     global $wpdb;
-    $id = (int) $id;
-    $table_type = $wpdb->prefix . "ot_unit_type";
-    $table_unit = $wpdb->prefix . "ot_unit";
-    $searchsql = 'SELECT * FROM ' . $table_type . ' where id = '. $id;
-    $type = $wpdb->get_row($searchsql);
+	$id = (int) $request['id'];
+    $table_name = $wpdb->prefix . "ot_ship_class";
+    $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
+    $ship_class = $wpdb->get_row($searchsql);
 
-    if ( null !== $type ) {
-      if ($details) {
-        $sql = 'SELECT id FROM ' . $table_unit . ' WHERE type = ' . $id;
-        $unit_ids = $wpdb->get_results( $sql);
+	if ( null !== $ship_class ) {
+		$table_ship = $wpdb->prefix . "ot_ship_model";
 
-        $ids = array();
-        foreach($unit_ids as $p) {
-          array_push($ids, $p->id);
-        }
-        $type->unit_ids = $ids;
-        return array('unit_type' => $type);
-      } else {
-        return $type;
-      }
-    } else { 
-      return new WP_Error( 'error', __( 'unit type not found' ), array( 'status' => 404 ) );
-    }
+		$sql = 'SELECT id FROM ' . $table_ship . ' WHERE class = ' . $ship_class->id;
+		$ship_ids = $wpdb->get_results( $sql);
+
+		$ids = array();
+		foreach($ship_ids as $p) {
+			array_push($ids, $p->id);
+		}
+		$ship_class->ship_models = $ids;
+
+		return array('ship_class' => $ship_class);
+	} else { 
+		return new WP_Error( 'error', __( 'ship_class not found' ), array( 'status' => 404 ) );
+	}
   }
- */
+
 
 }
 

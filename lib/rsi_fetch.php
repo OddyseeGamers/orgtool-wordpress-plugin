@@ -23,6 +23,8 @@ function fetchShipsFromRSI($page) {
 		return $ret;
 	}
 
+	error_log("------------ " . $var["success"] . " || " .  strlen($str));
+
 	$DOM = new DOMDocument;
 	$DOM->loadHTML('<?xml encoding="utf-8" ?>' . $str);
 	$xpath = new DomXPath($DOM);

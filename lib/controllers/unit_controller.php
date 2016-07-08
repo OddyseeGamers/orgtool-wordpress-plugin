@@ -2,7 +2,7 @@
 
 class Orgtool_API_Unit extends WP_REST_Controller
 {
-	private $namespace = 'orgtool';
+	protected $namespace = 'orgtool';
 	private $base = 'units';
 	private $base_type = 'unit_types';
 
@@ -98,7 +98,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
       foreach($unit_ids as $p) {
         array_push($ids, $p->id);
       }
-      $unit->unit_ids = $ids;
+      $unit->units = $ids;
 
       $sql = 'SELECT id FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
       $member_ids = $wpdb->get_results( $sql);
@@ -107,7 +107,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
       foreach($member_ids as $p) {
         array_push($ids, $p->id);
       }
-      $unit->member_unit_ids = $ids;
+      $unit->memberUnits = $ids;
 
     }
 //     return array('units' => $results);
@@ -135,7 +135,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
 			foreach($unit_ids as $p) {
 				array_push($ids, $p->id);
 			}
-			$unit->unit_ids = $ids;
+			$unit->units = $ids;
 
 			$sql = 'SELECT id FROM ' . $table_member . ' WHERE unit = ' . $unit->id;
 			$member_ids = $wpdb->get_results( $sql);
@@ -144,7 +144,7 @@ class Orgtool_API_Unit extends WP_REST_Controller
 			foreach($member_ids as $p) {
 				array_push($ids, $p->id);
 			}
-			$unit->member_unit_ids = $ids;
+			$unit->memberUnits = $ids;
 
 			return array('unit' => $unit);
 		} else {
