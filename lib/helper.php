@@ -4,7 +4,7 @@
 
 function mergeWPMembers($rsimembers) {
 	global $wpdb;
-	$sql= "select d.user_id as wp_id, u.name, d.value as handle "
+	$sql= "select d.user_id as wp_id, u.display_name as name, d.value as handle "
 		. "from wp_users as u "
 		. "left join wp_bp_xprofile_data as d on u.ID = d.user_id "
 		. "where d.field_id = 2";
