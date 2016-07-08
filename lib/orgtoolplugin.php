@@ -142,7 +142,7 @@ class OrgtoolPlugin {
 	}
 
 	function fetchAll() {
-		fetchShips();
+//         fetchShips();
 
 		$ot_mems = fetchMembers();
     mergeWPMembers($ot_mems);
