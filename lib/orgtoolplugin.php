@@ -24,7 +24,7 @@ class OrgtoolPlugin {
 		  id mediumint(9) NOT NULL AUTO_INCREMENT,
 		  wp_id int(11) DEFAULT NULL,
 		  name tinytext NOT NULL,
-		  handle tinytext NOT NULL,
+		  handle tinytext,
 		  avatar text,
 		  timezone int(11) DEFAULT NULL,
 		  updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -144,8 +144,12 @@ class OrgtoolPlugin {
 	function fetchAll() {
 //         fetchShips();
 
-		$ot_mems = fetchMembers();
-    mergeWPMembers($ot_mems);
+		$rsimembers = fetchMembers();
+    $rsimembersleft = mergeWPMembers($rsimembers);
+    $reversed = array_reverse($rsimembersleft);
+    foreach ($reversed as $mem) {
+      insertOrUpdateMember($mem);
+    }
 	}
 
 	function importFromWP() {

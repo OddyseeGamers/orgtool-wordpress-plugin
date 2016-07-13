@@ -127,6 +127,9 @@ function fetchMembersFromRSI($orgname, $page) {
 				if ($cnodes) {
 					if ($cnodes->length == 10) {
 						$img = $cnodes->item(1)->getAttribute('src');
+						if($img) {
+							$img = "https://robertsspaceindustries.com" . $img;
+						}
 					} else if ($cnodes->length == 5) {
 						$role = $cnodes->item(1)->childNodes->item(1)->nodeValue;
 						$roles = array();
@@ -176,7 +179,6 @@ function fetchMembers() {
 		}
 	} while(!$done);
 
-	error_log("members " . sizeof($members));
 	return $members;
 
 //     $wpmembers = fetchMembersFromWP();

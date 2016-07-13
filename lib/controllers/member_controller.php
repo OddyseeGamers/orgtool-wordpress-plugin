@@ -23,11 +23,11 @@ class Orgtool_API_Member extends WP_REST_Controller
 				'callback'        => array( $this, 'get_members' ),
 				'permission_callback' => array( $this, 'get_members_permissions_check' ),
 			),
-//			array(
-//				'methods'         => WP_REST_Server::CREATABLE,
-//				'callback'        => array( $this, 'create_unit' ),
-//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//			),
+			array(
+				'methods'         => WP_REST_Server::CREATABLE,
+				'callback'        => array( $this, 'create_member' ),
+				'permission_callback' => array( $this, 'get_members_permissions_check' ),
+			),
 		) );
 		register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
 			array(
@@ -73,9 +73,9 @@ class Orgtool_API_Member extends WP_REST_Controller
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_member";
     $table_member = $wpdb->prefix . "ot_member_unit";
-//     $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
+	$searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
 
-
+/*
     $searchsql = "select ru.*, temp.wp_id, temp.wp_profile from oddyse5_wp978.wp_ot_member as ru left join ( "
 				. "select d.value as wp_handle, u.ID as wp_id, "
 				. "CONCAT('{', GROUP_CONCAT('\"', d.field_id, '\":\"', d.value, '\"' ORDER BY d.value DESC SEPARATOR ','),'}') as wp_profile "
@@ -95,7 +95,7 @@ class Orgtool_API_Member extends WP_REST_Controller
 				. "or d.field_id > 300 " 
 				. "group by wp_id "
 				. ") as temp on ru.handle = temp.wp_handle";
-
+ */
 
     $results = $wpdb->get_results($searchsql);
 
@@ -167,6 +167,8 @@ class Orgtool_API_Member extends WP_REST_Controller
 
 
   public function create_member($data = "", $_headers = array() ) {
+	  log_error(">>>>> CREATE MEMBER " . sizeof($data));
+	  return array();
     if (array_key_exists("member", $data)) {
       $data = $data["member"];
 //       unset($data["members"]);
@@ -177,6 +179,34 @@ class Orgtool_API_Member extends WP_REST_Controller
     $res = $wpdb->insert($table_name, $data);
     return $this->get_member( $wpdb->insert_id );
   }
+
+
+  /*
+    public function create_member_unit($request) {
+	// why do I have to do this?? missing arg? WP API borken?
+	$data = json_decode( $request->get_body(), true );
+	if ( ! empty( $data['memberUnit'] ) ) {
+	  $data = $data["memberUnit"];
+	}
+
+//     $data["member"] = $data["member_id"];
+//     unset($data["member_id"]);
+//     $data["unit"] = $data["unit_id"];
+//     unset($data["unit_id"]);
+
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . "ot_member_unit";
+    $res = $wpdb->insert($table_name, $data);
+
+    if (null !== $res) {
+//       return array("create ok" => $res, "data" => $data, "inserted id" => $wpdb->insert_id);
+       return $this->get_member_unit( array("id" => $wpdb->insert_id) );
+    } else {
+      return new WP_Error( 'error', __( 'unit not created' ), array( 'status' => 400 ) );
+    }
+	}
+   */
 
 
   public function update_member( $id, $data = "", $_headers = array() ) {
