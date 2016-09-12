@@ -38,21 +38,21 @@ class Orgtool_API_Member extends WP_REST_Controller
 					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
 			),
-//			array(
-//				'methods'         => WP_REST_Server::EDITABLE,
-//				'callback'        => array( $this, 'update_unit' ),
-//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//			),
-//			array(
-//				'methods'  => WP_REST_Server::DELETABLE,
-//				'callback' => array( $this, 'delete_unit' ),
-//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//				'args'     => array(
-//					'force'    => array(
-//						'default'      => false,
-//					),
-//				),
-//			),
+			array(
+				'methods'         => WP_REST_Server::EDITABLE,
+				'callback'        => array( $this, 'update_member' ),
+				'permission_callback' => array( $this, 'get_members_permissions_check' ),
+			),
+			array(
+				'methods'  => WP_REST_Server::DELETABLE,
+				'callback' => array( $this, 'delete_member' ),
+				'permission_callback' => array( $this, 'get_members_permissions_check' ),
+				'args'     => array(
+					'force'    => array(
+						'default'      => false,
+					),
+				),
+			),
 		) );
 
 	}
@@ -166,7 +166,41 @@ class Orgtool_API_Member extends WP_REST_Controller
   }
 
 
-  public function create_member($data = "", $_headers = array() ) {
+  public function create_member($request) {
+
+	// why do I have to do this?? missing arg? WP API borken?
+	$data = json_decode( $request->get_body(), true );
+	if ( ! empty( $data['member'] ) || $data['member'] == [] ) {
+//return array("debug"=>1);
+	  $data = $data["member"];
+	}
+        if ( empty( $data['name']) ) {
+	
+	$data["name"] = "";
+//return array("debug"=> $data);
+      }
+
+
+ //   return array("data" => $data, "rwa" => $request->get_body(), "json" =>$request->get_params());
+
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . "ot_member";
+    $res = $wpdb->insert($table_name, $data);
+
+  //  return array("data" => $data, "id" => $wpdb->insert_id, "rese" => $res);
+
+    if (null !== $res) {
+//       return array("create ok" => $res, "data" => $data, "inserted id" => $wpdb->insert_id);
+       return $this->get_member( array("id" => $wpdb->insert_id) );
+    } else {
+      return new WP_Error( 'error', __( 'member not created' ), array( 'status' => 400 ) );
+    }
+
+  }
+
+
+  /*
 	  log_error(">>>>> CREATE MEMBER " . sizeof($data));
 	  return array();
     if (array_key_exists("member", $data)) {
@@ -178,10 +212,48 @@ class Orgtool_API_Member extends WP_REST_Controller
     $table_name = $wpdb->prefix . "ot_member";
     $res = $wpdb->insert($table_name, $data);
     return $this->get_member( $wpdb->insert_id );
+
+
+  public function create_unit($request) {
+	// why do I have to do this?? missing arg? WP API borken?
+	$data = json_decode( $request->get_body(), true );
+	if ( ! empty( $data['unit'] ) ) {
+	  $data = $data["unit"];
+//       unset($data["members"]);
+	}
+
+//     $data["parent"] = $data["parent_id"];
+//     unset($data["parent_id"]);
+//     $data["type"] = $data["type_id"];
+//     unset($data["type_id"]);
+
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . "ot_unit";
+    $res = $wpdb->insert($table_name, $data);
+
+    if (null !== $res) {
+//       return array("create ok" => $res, "data" => $data, "inserted id" => $wpdb->insert_id);
+       return $this->get_unit( array("id" => $wpdb->insert_id) );
+    } else {
+      return new WP_Error( 'error', __( 'unit not created' ), array( 'status' => 400 ) );
+    }
   }
 
 
-  /*
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function create_member_unit($request) {
 	// why do I have to do this?? missing arg? WP API borken?
 	$data = json_decode( $request->get_body(), true );
@@ -209,14 +281,33 @@ class Orgtool_API_Member extends WP_REST_Controller
    */
 
 
-  public function update_member( $id, $data = "", $_headers = array() ) {
-    $id = (int) $id;
+  public function update_member($request) { //  $id, $data = "", $_headers = array() ) {
+	$data = json_decode( $request->get_body(), true );
+//	if ( ! empty( $data['member'] ) || $data['member'] == [] ) {
+//	  $data = $data["member"];
+//	}
+
+	$id = (int) $request['id'];
+//return array("id" => $id, "data" => $data, "body" => $request->get_body());
+//    $id = (int) $id;
+
+	    global $wpdb;
+	    $table_name = $wpdb->prefix . "ot_member";
+
+        $res = $wpdb->update($table_name, $data, array( 'id' => $id));
+	if (false !== $res ) {
+		return $this->get_member( array("id" => $id) );
+	} else {
+		return new WP_Error( 'error', __( 'update member error ' . $res->last_error), array( 'status' => 404 ) );
+	}
+
+/*
     $member = $this->get_member( $id, false );
 
     if ( empty( $id ) || empty( $member->id ) ) {
       return new WP_Error( 'error', __( 'member not found 3 '), array( 'status' => 404 ) );
     }
-
+*/
 /*
     if ( isset( $_headers['IF_UNMODIFIED_SINCE'] ) ) {
       // As mandated by RFC2616, we have to check all of RFC1123, RFC1036
@@ -234,13 +325,20 @@ class Orgtool_API_Member extends WP_REST_Controller
       }
     }
  */
-    global $wpdb;
-    $table_name = $wpdb->prefix . "ot_member";
-    $res = $wpdb->update($table_name, $data, array( 'id' => $id));
-    return $this->get_member( $id );
   }
 
-  public function delete_member($id, $force = false) {
+  public function delete_member($request) {
+	  $id = (int) $request['id'];
+	  $member = $this->get_member( array("id" => $id), false);
+
+	  if ( empty( $id ) || empty( $member->id ) ) {
+		  return new WP_Error( 'error', __( 'member not found 2 '), array( 'status' => 404 ) );
+	  }
+	  global $wpdb;
+	  $table_name = $wpdb->prefix . "ot_member";
+	  $res = $wpdb->delete($table_name, array('id' => $id));
+
+/*
     $id = (int) $id;
     $member = $this->get_member( $id , false);
 
@@ -250,6 +348,7 @@ class Orgtool_API_Member extends WP_REST_Controller
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_member";
     $res = $wpdb->delete($table_name, array('id' => $id));
+*/
   }
 }
 

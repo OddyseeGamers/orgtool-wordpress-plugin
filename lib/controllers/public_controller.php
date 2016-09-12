@@ -17,7 +17,8 @@ class Orgtool_API_Public extends WP_REST_Controller
 		//$base = $this->get_post_type_base( $this->post_type );
 		//$base = $this->type;
 
-		register_rest_route($this->namespace, '(?P<id>[\w]+)/members', array(
+
+		register_rest_route($this->namespace, '(?P<org>[\w]+)/members', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_members' ),
@@ -26,21 +27,6 @@ class Orgtool_API_Public extends WP_REST_Controller
 					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
 			),
-//			array(
-//				'methods'         => WP_REST_Server::EDITABLE,
-//				'callback'        => array( $this, 'update_unit' ),
-//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//			),
-//			array(
-//				'methods'  => WP_REST_Server::DELETABLE,
-//				'callback' => array( $this, 'delete_unit' ),
-//				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//				'args'     => array(
-//					'force'    => array(
-//						'default'      => false,
-//					),
-//				),
-//			),
 		) );
 
 	}
@@ -57,34 +43,59 @@ class Orgtool_API_Public extends WP_REST_Controller
 	}
 
 
-	public function get_members($_headers) {
+	public function get_members($request) {
+		$org = $request['org'];
+
+                if (strtolower($org) != "oddysee") {
+		      return new WP_Error( 'error', __( 'not found' ), array( 'status' => 404 ) );
+		} 
+		$query = $request->get_query_params();
+
+/*
+                if (array_key_exists("tz", $query)) {
+		return array("search for" => $org, "query" => $query);
+		} else {
+		return array("org" => $org, "val" => intval($query["tz"]));
+		}
+*/
 		global $wpdb;
 		$table_name = $wpdb->prefix . "ot_member";
 		$table_member = $wpdb->prefix . "ot_member_unit";
+		$table_unit = $wpdb->prefix . "ot_unit";
+
 		$searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
+                if (array_key_exists("tz", $query)) {
+			if (is_array($query["tz"])) {
+				$searchsql = 'SELECT * FROM ' . $table_name . ' where timezone in (' . join(", ", $query["tz"]) . ') order by timezone';
+			} else {
+				$searchsql = 'SELECT * FROM ' . $table_name . ' where timezone = ' . intval($query["tz"]) . ' order by timezone';
+			}
+		}
+
+//		return array("WTF" => $searchsql);
 
 		$results = $wpdb->get_results($searchsql);
 
 		$table_ship = $wpdb->prefix . "ot_ship";
+		$table_shipmodel = $wpdb->prefix . "ot_ship_model";
 		foreach($results as $member) {
-			$sql = 'SELECT id FROM ' . $table_ship . ' WHERE member = ' . $member->id;
-			$ship_ids = $wpdb->get_results( $sql);
+			$sql = 'select s.name, m.name as model from ' . $table_ship . ' as s left join ' . $table_shipmodel . ' as m on s.model = m.id WHERE member = ' . $member->id;
+			$ships = $wpdb->get_results( $sql);
 
-			$ids = array();
-			foreach($ship_ids as $p) {
-				array_push($ids, $p->id);
-			}
-			$member->ships = $ids;
+//			$ids = array();
+//			foreach($ship_ids as $p) {
+//				array_push($ids, $p->id);
+//			}
+			$member->ships = $ships;
 
-			$sql = 'SELECT id FROM ' . $table_member . ' WHERE member = ' . $member->id;
-			$unit_ids = $wpdb->get_results( $sql);
+			$sql = 'SELECT u.name FROM ' . $table_member . ' as m left join ' . $table_unit . ' as u on m.unit = u.id WHERE m.member = ' . $member->id;
+			$units = $wpdb->get_results( $sql);
 
-			$ids = array();
-			foreach($unit_ids as $p) {
-				array_push($ids, $p->id);
-			}
-			$member->memberUnits = $ids;
-			unset($member["id"]);
+			$member->units = $units;
+			unset($member->id);
+			unset($member->wp_id);
+			unset($member->updated_at);
+			unset($member->logs);
 		}
 
 		return array('members' => $results);
@@ -131,5 +142,6 @@ class Orgtool_API_Public extends WP_REST_Controller
       return new WP_Error( 'error', __( 'member not found' ), array( 'status' => 404 ) );
     }
   }
+}
 
 ?>
