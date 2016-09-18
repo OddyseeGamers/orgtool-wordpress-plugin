@@ -427,13 +427,13 @@ function insertOrUpdateShipAsItem($ship) {
 
     // check if there is an item prop of type manufacturer
     $table_itype = $wpdb->prefix . "ot_item_type";
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE name = "' . $ship['mname'] . '"');
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "manufacturer"');
     $manuType = $result->id;
     if(!isset($manuType)) {
-        $res = $wpdb->insert($table_itype, array("typeName" => "manufacturer", "name" => $ship['mname'], "img" => $ship['mimg'] ));
+        $res = $wpdb->insert($table_itype, array("typeName" => "manufacturer", "name" =>  "Manufacturer"));
         $manuType = $wpdb->insert_id;
-    } else {
-        $wpdb->update($table_itype, array("img" => $ship['mimg']), array( 'id' => $manuType));
+//     } else {
+//         $wpdb->update($table_itype, array("img" => $ship['mimg']), array( 'id' => $manuType));
     }
 
     // check if there is an item of type manufacturer
@@ -449,17 +449,17 @@ function insertOrUpdateShipAsItem($ship) {
     unset($ship['mimg']);
 
 
-    // check if there is an item prop of type shipmodel
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE name = "' . $ship['name'] . '"');
+    // check if there is an item prop of type pmodel
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "model"');
     $modelType = $result->id;
     if(!isset($modelType)) {
-        $res = $wpdb->insert($table_itype, array("typeName" => "shipModel", "name" => $ship['name'], "img" => $ship['img'] ));
+        $res = $wpdb->insert($table_itype, array("typeName" => "model", "name" => "Model"));
         $modelType = $wpdb->insert_id;
-    } else {
-        $wpdb->update($table_itype, array("img" => $ship['img']), array( 'id' => $modelType));
+//     } else {
+//         $wpdb->update($table_itype, array("img" => $ship['img']), array( 'id' => $modelType));
     }
 
-    // check if there is an item of type shipModel
+    // check if there is an item of type Model
     $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["name"] . '" and parent = "' . $modelType . '"');
     $model = $result->id;
     if(!isset($model)) {
@@ -467,19 +467,8 @@ function insertOrUpdateShipAsItem($ship) {
         $model = $wpdb->insert_id;
     }
 
-/*
-    $ship["parent"] = $model;
 
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE id = "' . $ship['id'] . '"');
-    $iid = $result->id;
-    if(!isset($iid)) {
-        $res = $wpdb->insert($table_item, array("id" => $ship["id"], "name" => $mname, "img" => $mimg ));
-        $iid = $wpdb->insert_id;
-    } else if ($result->parent != $ship["parent"]) {
-        // TODO: update all old ships
-    } 
-    $ship["parent"] = $iid;
-
+    /*
     $props = array();
     $table_ptype = $wpdb->prefix . "ot_item_prop_type";
     $table_prop = $wpdb->prefix . "ot_item_prop";
@@ -489,7 +478,7 @@ function insertOrUpdateShipAsItem($ship) {
         $result = $wpdb->get_row( 'SELECT * FROM ' . $table_ptype . ' WHERE name = "' . $prop . '"');
         $ptid = $result->id;
         if(!isset($ptid)) {
-            $res = $wpdb->insert($table_ptype, array( "name" => $prop));
+            $res = $wpdb->insert($table_ptype, array( "typeName" => "stats", "name" => $prop));
             $ptid = $wpdb->insert_id;
         }
 
@@ -504,9 +493,7 @@ function insertOrUpdateShipAsItem($ship) {
 
         unset($ship[$prop]);
     }
-*/
-//     unset($ship['class']);
-
+     */
 
 
     /*
