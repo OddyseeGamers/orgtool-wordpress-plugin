@@ -13,8 +13,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 	 * Register the routes for the objects of the controller.
 	 */
 	public function register_routes() {
-		$base = $this->base;
-		register_rest_route($this->namespace, '/' . $base, array(
+		register_rest_route($this->namespace, '/' . $this->base, array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_items' ),
@@ -22,7 +21,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 			),
 		) );
 
-		register_rest_route($this->namespace, '/' . $base . '/(?P<id>[\d]+)', array(
+		register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_item' ),
@@ -35,7 +34,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 
         
         
-        register_rest_route($this->namespace, '/' . $this->base_class, array(
+        register_rest_route($this->namespace, '/' . $this->base_type, array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_item_types' ),
@@ -43,7 +42,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 			),
 		) );
 /*
-		register_rest_route($this->namespace, '/' . $this->base_class . '/(?P<id>[\d]+)', array(
+		register_rest_route($this->namespace, '/' . $this->base_type . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_item_type' ),
