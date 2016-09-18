@@ -67,7 +67,7 @@ class Orgtool_API_ItemProp extends WP_REST_Controller
     public function get_item_props($request) {
         global $wpdb;
         $table_item_prop = $wpdb->prefix . "ot_item_prop";
-        $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
+        $searchsql = 'SELECT * FROM ' . $table_item_prop . ' order by id';
         $results = $wpdb->get_results($searchsql);
 
         return rest_ensure_response( array('item_props' => $results) );
@@ -78,13 +78,13 @@ class Orgtool_API_ItemProp extends WP_REST_Controller
         global $wpdb;
         $id = (int) $request['id'];
         $table_item_prop = $wpdb->prefix . "ot_item_prop";
-        $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
+        $searchsql = 'SELECT * FROM ' . $table_item_prop . ' where id = '. $id;
         $item_prop = $wpdb->get_row($searchsql);
 
         if ( null !== $item_prop ) {
             return array('item_prop' => $item_prop);
         } else { 
-            return new WP_Error( 'error', __( 'member unit not found' ), array( 'status' => 404 ) );
+            return new WP_Error( 'error', __( 'itpem_prop not found' ), array( 'status' => 404 ) );
         }
     }
 
