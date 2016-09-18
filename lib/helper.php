@@ -484,7 +484,7 @@ function insertOrUpdateShipAsItem($ship) {
         $propval = $ship[$prop];
 
         // insert or update property
-        $result = $wpdb->get_row( 'SELECT * FROM ' . $table_prop . ' WHERE type = "' . $statsid . '" and name = "' . $prop . '" value = "' . $propval . '"');
+        $result = $wpdb->get_row( 'SELECT * FROM ' . $table_prop . ' WHERE type = "' . $statsid . '" and name = "' . $prop . '" and value = "' . $propval . '"');
         $pid = $result->id;
         if(!isset($pid)) {
             $res = $wpdb->insert($table_prop, array( "type" => $statid, "name" => $prop, "value" => $propval));
