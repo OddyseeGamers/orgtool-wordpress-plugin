@@ -100,6 +100,7 @@ class Orgtool_API_Item extends WP_REST_Controller
   }
 
   private function get_props_for_item($item) {
+    global $wpdb;
     $table_prop = $wpdb->prefix . "ot_item_prop";
     $sql = 'SELECT id FROM ' . $table_prop . ' WHERE item = ' . $item->id;
     $prop_ids = $wpdb->get_results( $sql);
