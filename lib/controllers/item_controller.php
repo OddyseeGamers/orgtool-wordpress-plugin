@@ -3,8 +3,8 @@
 class Orgtool_API_Item extends WP_REST_Controller
 {
 	protected $namespace = 'orgtool';
-	private $base = 'item';
-	private $base_type = 'item_type';
+	private $base = 'items';
+	private $base_type = 'item_types';
 
 //     public function __construct() {
 //     }
@@ -21,7 +21,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 			),
 		) );
-        /*
+
 		register_rest_route($this->namespace, '/' . $base . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
@@ -32,7 +32,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 				),
 			),
 		) );
-
+        /*
 		register_rest_route($this->namespace, '/' . $this->base_class, array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
@@ -90,24 +90,35 @@ class Orgtool_API_Item extends WP_REST_Controller
 	return $response;
   }
 
-    /*
 
-  public function get_ship_model($request) {
+  public function get_item($request) {
     global $wpdb;
-	  $id = (int) $request['id'];
-    $table_name = $wpdb->prefix . "ot_ship_model";
-    $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
-    $unit = $wpdb->get_row($searchsql);
+    $id = (int) $request['id'];
+    $table_item = $wpdb->prefix . "ot_item";
+    $searchsql = 'SELECT * FROM ' . $table_item . ' where id = '. $id;
+    $item = $wpdb->get_row($searchsql);
 
-//     $id = (int) $id;
+    $table_prop = $wpdb->prefix . "ot_item_prop";
+    foreach($results as $item) {
+      $sql = 'SELECT id FROM ' . $table_prop . ' WHERE item = ' . $item->id;
+      $item_ids = $wpdb->get_results( $sql);
+
+      $ids = array();
+      foreach($item_ids as $p) {
+        array_push($ids, $p->id);
+      }
+      $item->items = $ids;
+	}
+
     if ( null !== $unit ) {
-		return array('ship_model' => $unit);
+		return array('item' => $item);
     } else { 
       return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
     }
   }
 
 
+    /*
   public function create_ship_model($request) {
 	
 	$data = array();
