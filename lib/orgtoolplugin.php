@@ -235,7 +235,7 @@ class OrgtoolPlugin {
 
     function otp_activation() {
         error_log(">> ot_activate");
-//         self::createSchema();
+        self::createSchema();
         self::fetchAll();
 //         self::initFixtures();
 //         self::importFromWP();
@@ -243,8 +243,8 @@ class OrgtoolPlugin {
 
     function otp_deactivation() {
         error_log(">> ot_deactivate");
-//         self::createSchema();
-//         self::fetchAll();
+        self::createSchema();
+        self::fetchAll();
 //         self::importFromWP();
     }
 }
