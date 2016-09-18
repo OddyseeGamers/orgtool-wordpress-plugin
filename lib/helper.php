@@ -433,13 +433,13 @@ function insertOrUpdateShipAsItem($ship) {
         $res = $wpdb->insert($table_itype, array("typeName" => "manufacturer", "name" => $ship['mname'], "img" => $ship['mimg'] ));
         $manuType = $wpdb->insert_id;
     } else {
-        $wpdb->update($table_itype, $array("img" => $ship['mimg'], array( 'id' => $manuType));
+        $wpdb->update($table_itype, array("img" => $ship['mimg']), array( 'id' => $manuType));
     }
 
     // check if there is an item of type manufacturer
     $table_item = $wpdb->prefix . "ot_item";
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["mname"] . '" and parent = "' . $manuType . '"');
-    $manu = $result->id
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["mname"] . '" and type = "' . $manuType . '"');
+    $manu = $result->id;
     if(!isset($manu)) {
         $res = $wpdb->insert($table_item, array("type" => $manuType, "name" => $ship['mname'], "img" => $ship["mimg"] ));
         $manu = $wpdb->insert_id;
@@ -456,12 +456,12 @@ function insertOrUpdateShipAsItem($ship) {
         $res = $wpdb->insert($table_itype, array("typeName" => "shipModel", "name" => $ship['name'], "img" => $ship['img'] ));
         $modelType = $wpdb->insert_id;
     } else {
-        $wpdb->update($table_itype, $array("img" => $ship['img']), array( 'id' => $modelType));
+        $wpdb->update($table_itype, array("img" => $ship['img']), array( 'id' => $modelType));
     }
 
     // check if there is an item of type shipModel
     $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["name"] . '" and parent = "' . $modelType . '"');
-    $model = $result->id
+    $model = $result->id;
     if(!isset($model)) {
         $res = $wpdb->insert($table_item, array("type" => $modelType, "parent" => $manu, "name" => $ship['name'], "img" => $ship["img"] ));
         $model = $wpdb->insert_id;

@@ -43,11 +43,11 @@ function fetchShipsFromRSI($page) {
 		$shiparr = array( "id" => $id->item(0)->value, 
 							"name" => $temp[0],
 							"class" => $temp[1],
-							"img" => $img->item(0)->value, 
+							"img" => "https://robertsspaceindustries.com" . $img->item(0)->value, 
 							"crew" => $divb->item(0)->nodeValue, 
 							"length" => $divb->item(1)->nodeValue, 
 							"mass" => $divb->item(2)->nodeValue, 
-							"mimg" => $imgm->item(0)->value,
+							"mimg" => "https://robertsspaceindustries.com" . $imgm->item(0)->value,
 							"mname" => $mname,
 							"updated_at" => current_time( 'mysql' )
 					   );
