@@ -32,14 +32,17 @@ class Orgtool_API_Item extends WP_REST_Controller
 				),
 			),
 		) );
-        /*
-		register_rest_route($this->namespace, '/' . $this->base_class, array(
+
+        
+        
+        register_rest_route($this->namespace, '/' . $this->base_class, array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
 				'callback'        => array( $this, 'get_item_types' ),
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 			),
 		) );
+/*
 		register_rest_route($this->namespace, '/' . $this->base_class . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
@@ -183,34 +186,35 @@ class Orgtool_API_Item extends WP_REST_Controller
 	  $res = $wpdb->delete($table_name, array('id' => $id));
   }
 
-
+     */
 
   //////////////////////////////////////////////////////////////
 
-  public function get_ship_classes($request) {
+  public function get_item_types($request) {
     global $wpdb;
-    $table_name = $wpdb->prefix . "ot_ship_class";
-    $searchsql = 'SELECT * FROM ' . $table_name . ' order by id';
+    $table_type = $wpdb->prefix . "ot_item_type";
+    $searchsql = 'SELECT * FROM ' . $table_type . ' order by id';
     $results = $wpdb->get_results($searchsql);
 
-    $table_ship = $wpdb->prefix . "ot_ship_model";
-    foreach($results as $ship_class) {
-      $sql = 'SELECT id FROM ' . $table_ship . ' WHERE class = ' . $ship_class->id;
-      $ship_ids = $wpdb->get_results( $sql);
+    $table_item = $wpdb->prefix . "ot_item";
+    foreach($results as $item_type) {
+      $sql = 'SELECT id FROM ' . $table_item . ' WHERE type = ' . $item_type->id;
+      $item_ids = $wpdb->get_results( $sql);
 
       $ids = array();
-      foreach($ship_ids as $p) {
+      foreach($item_ids as $p) {
         array_push($ids, $p->id);
       }
-      $ship_class->ship_models = $ids;
+      $item_types->items = $ids;
 	}
 
 //     return array('units' => $results);
-	$response = rest_ensure_response( array('ship_classes' => $results) );
+	$response = rest_ensure_response( array('item_types' => $results) );
 //     $response->header( 'Content-Type', "application/json" );
 	return $response;
   }
 
+/*
 
   public function get_ship_class($request) {
     global $wpdb;
