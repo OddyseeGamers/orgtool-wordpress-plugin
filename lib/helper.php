@@ -449,11 +449,11 @@ function insertOrUpdateShipAsItem($ship) {
     unset($ship['mimg']);
 
 
-    // check if there is an item prop of type pmodel
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "model"');
+    // check if there is an item prop of type ship
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "ship"');
     $modelType = $result->id;
     if(!isset($modelType)) {
-        $res = $wpdb->insert($table_itype, array("typeName" => "model", "name" => "Model"));
+        $res = $wpdb->insert($table_itype, array("typeName" => "ship", "name" => "Ship"));
         $modelType = $wpdb->insert_id;
 //     } else {
 //         $wpdb->update($table_itype, array("img" => $ship['img']), array( 'id' => $modelType));

@@ -41,7 +41,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 				'permission_callback' => array( $this, 'get_items_permissions_check' ),
 			),
 		) );
-/*
+
 		register_rest_route($this->namespace, '/' . $this->base_type . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
@@ -52,7 +52,6 @@ class Orgtool_API_Item extends WP_REST_Controller
 				),
 			),
 		) );
-         */
 	}
 
 	public function get_items_permissions_check( $request ) {
@@ -79,10 +78,7 @@ class Orgtool_API_Item extends WP_REST_Controller
         $this->get_props_for_item($item);
 	}
 
-//     return array('units' => $results);
-	$response = rest_ensure_response( array('items' => $results) );
-//     $response->header( 'Content-Type', "application/json" );
-	return $response;
+	return rest_ensure_response( array('items' => $results) );
   }
 
 
@@ -197,49 +193,39 @@ class Orgtool_API_Item extends WP_REST_Controller
 
     $table_item = $wpdb->prefix . "ot_item";
     foreach($results as $item_type) {
-      $sql = 'SELECT id FROM ' . $table_item . ' WHERE type = ' . $item_type->id;
-      $item_ids = $wpdb->get_results( $sql);
-
-      $ids = array();
-      foreach($item_ids as $p) {
-        array_push($ids, $p->id);
-      }
-      $item_type->items = $ids;
+        $this->get_items_for_type($item_type);
 	}
 
-//     return array('units' => $results);
-	$response = rest_ensure_response( array('item_types' => $results) );
-//     $response->header( 'Content-Type', "application/json" );
-	return $response;
+	return rest_ensure_response( array('item_types' => $results) );
   }
 
-/*
 
-  public function get_ship_class($request) {
+  public function get_item_type($request) {
     global $wpdb;
 	$id = (int) $request['id'];
-    $table_name = $wpdb->prefix . "ot_ship_class";
-    $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
-    $ship_class = $wpdb->get_row($searchsql);
+    $table_type = $wpdb->prefix . "ot_item_type";
+    $searchsql = 'SELECT * FROM ' . $table_type . ' where id = '. $id;
+    $item_type = $wpdb->get_row($searchsql);
 
-	if ( null !== $ship_class ) {
-		$table_ship = $wpdb->prefix . "ot_ship_model";
-
-		$sql = 'SELECT id FROM ' . $table_ship . ' WHERE class = ' . $ship_class->id;
-		$ship_ids = $wpdb->get_results( $sql);
-
-		$ids = array();
-		foreach($ship_ids as $p) {
-			array_push($ids, $p->id);
-		}
-		$ship_class->ship_models = $ids;
-
-		return array('ship_class' => $ship_class);
+	if ( null !== $item_type ) {
+        $this->get_items_for_type($item_type);
+		return array('item_type' => $item_type);
 	} else { 
-		return new WP_Error( 'error', __( 'ship_class not found' ), array( 'status' => 404 ) );
+		return new WP_Error( 'error', __( 'item_type not found' ), array( 'status' => 404 ) );
 	}
   }
-*/
+
+  private function get_items_for_type($item_type) {
+    global $wpdb;
+    $sql = 'SELECT id FROM ' . $table_item . ' WHERE type = ' . $item_type->id;
+    $item_ids = $wpdb->get_results( $sql);
+
+    $ids = array();
+    foreach($item_ids as $p) {
+      array_push($ids, $p->id);
+    }
+    $item_type->items = $ids;
+  }
 
 }
 

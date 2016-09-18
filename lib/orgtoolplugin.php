@@ -144,7 +144,7 @@ class OrgtoolPlugin {
             name tinytext NOT NULL,
             description text,
             img text,
-            UNIQUE KEY id (id)
+            PRIMARY KEY (id)
         ) $charset_collate;";
     }
 
@@ -159,7 +159,7 @@ class OrgtoolPlugin {
             updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             type int(11) DEFAULT NULL,
             item int(11) DEFAULT NULL,
-            UNIQUE KEY id (id)
+            PRIMARY KEY (id)
         ) $charset_collate;";
     }
 
@@ -171,7 +171,7 @@ class OrgtoolPlugin {
             name tinytext NOT NULL,
             description text,
             img text,
-            UNIQUE KEY id (id)
+            PRIMARY KEY (id)
         ) $charset_collate;";
     }
 
@@ -186,7 +186,7 @@ class OrgtoolPlugin {
             parent int(11) DEFAULT NULL,
             member int(11) DEFAULT NULL,
             unit int(11) DEFAULT NULL,
-            UNIQUE KEY id (id)
+            PRIMARY KEY (id)
         ) $charset_collate;";
     }
 
@@ -196,7 +196,7 @@ class OrgtoolPlugin {
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             item int(11) DEFAULT NULL,
             prop int(11) DEFAULT NULL,
-            UNIQUE KEY id (id)
+            PRIMARY KEY (id)
         ) $charset_collate;";
     }
 
