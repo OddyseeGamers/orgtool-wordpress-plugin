@@ -394,15 +394,15 @@ function insertOrUpdateMember($user) {
 
     if(isset($results->handle)) {
         error_log("update only avatar for now, handle: " . $user["handle"] . ", name: " . $user["name"]);
-        //         error_log("update only avatar for now (TODO add options), handle: " . $user["handle"] . ", name: " . $user["name"] . ", avatar: " . $user["avatar"]);
+//         error_log("update only avatar for now (TODO add options), handle: " . $user["handle"] . ", name: " . $user["name"] . ", avatar: " . $user["avatar"]);
         $wpdb->update($table_name, array("avatar" => $user["avatar"]), array( 'handle' => $user["handle"]));
 
-        //         error_log("skip (TODO add options) " . $user["handle"] . " | " . $user["name"]);
-        //         $wpdb->update($table_name, $user, array( 'handle' => $user["handle"]));
+//         error_log("skip (TODO add options) " . $user["handle"] . " | " . $user["name"]);
+//         $wpdb->update($table_name, $user, array( 'handle' => $user["handle"]));
 
     } else {
         error_log("insert " . $user["handle"] . " | " . $user["name"]);
-        //         $wpdb->insert($table_name, $user);
+//         $wpdb->insert($table_name, $user);
     }
 }
 
@@ -487,7 +487,7 @@ function insertOrUpdateShipAsItem($ship) {
         $result = $wpdb->get_row( 'SELECT * FROM ' . $table_prop . ' WHERE type = "' . $statsid . '" and name = "' . $prop . '" and value = "' . $propval . '"');
         $pid = $result->id;
         if(!isset($pid)) {
-            $res = $wpdb->insert($table_prop, array( "type" => $statid, "name" => $prop, "value" => $propval, "unit" => $unit));
+            $res = $wpdb->insert($table_prop, array( "type" => $statsid, "name" => $prop, "value" => $propval, "unit" => $unit));
             $pid = $wpdb->insert_id;
         }
         
