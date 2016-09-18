@@ -193,7 +193,7 @@ class Orgtool_API_Item extends WP_REST_Controller
 
     $table_item = $wpdb->prefix . "ot_item";
     foreach($results as $item_type) {
-        $this->get_items_for_type($item_type);
+        $item_type->items = $this->get_items_for_type($item_type->id);
 	}
 
 	return rest_ensure_response( array('item_types' => $results) );
@@ -208,23 +208,23 @@ class Orgtool_API_Item extends WP_REST_Controller
     $item_type = $wpdb->get_row($searchsql);
 
 	if ( null !== $item_type ) {
-        $this->get_items_for_type($item_type);
+        $item_type->items = $this->get_items_for_type($item_type->id);
 		return array('item_type' => $item_type);
 	} else { 
 		return new WP_Error( 'error', __( 'item_type not found' ), array( 'status' => 404 ) );
 	}
   }
 
-  private function get_items_for_type($item_type) {
+  private function get_items_for_type($itemid) {
     global $wpdb;
-    $sql = 'SELECT id FROM ' . $table_item . ' WHERE type = ' . $item_type->id;
+    $sql = 'SELECT id FROM ' . $table_item . ' WHERE type = ' . $itemid;
     $item_ids = $wpdb->get_results( $sql);
 
     $ids = array();
     foreach($item_ids as $p) {
       array_push($ids, $p->id);
     }
-    $item_type->items = $ids;
+    return $ids;
   }
 
 }
