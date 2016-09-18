@@ -16,10 +16,11 @@ class OrgtoolPlugin {
 //         dbDelta( self::createShipClass($wpdb->prefix, $charset_collate) );
 //         dbDelta( self::createShip($wpdb->prefix, $charset_collate) );
 
-        dbDelta( self::createItemPropertyType($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createItemProperties($wpdb->prefix, $charset_collate) );
+        dbDelta( self::createPropertyType($wpdb->prefix, $charset_collate) );
+        dbDelta( self::createProperty($wpdb->prefix, $charset_collate) );
         dbDelta( self::createItemType($wpdb->prefix, $charset_collate) );
         dbDelta( self::createItem($wpdb->prefix, $charset_collate) );
+        dbDelta( self::createItemProperty($wpdb->prefix, $charset_collate) );
 
         error_log(">> create schema done");
     }
@@ -135,8 +136,8 @@ class OrgtoolPlugin {
        ) $charset_collate;";
     }
 
-    function createItemPropertyType($prefix, $charset_collate) {
-        $table_name = $prefix . "ot_item_prop_type";
+    function createPropertyType($prefix, $charset_collate) {
+        $table_name = $prefix . "ot_prop_type";
         return "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             typeName tinytext NOT NULL,
@@ -147,8 +148,8 @@ class OrgtoolPlugin {
         ) $charset_collate;";
     }
 
-    function createItemProperties($prefix, $charset_collate) {
-        $table_name = $prefix . "ot_item_prop";
+    function createProperty($prefix, $charset_collate) {
+        $table_name = $prefix . "ot_prop";
         return "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             name tinytext NOT NULL,
@@ -185,6 +186,16 @@ class OrgtoolPlugin {
             parent int(11) DEFAULT NULL,
             member int(11) DEFAULT NULL,
             unit int(11) DEFAULT NULL,
+            UNIQUE KEY id (id)
+        ) $charset_collate;";
+    }
+
+    function createItemProperty($prefix, $charset_collate) {
+        $table_name = $prefix . "ot_item_prop";
+        return "CREATE TABLE $table_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            item int(11) DEFAULT NULL,
+            prop int(11) DEFAULT NULL,
             UNIQUE KEY id (id)
         ) $charset_collate;";
     }

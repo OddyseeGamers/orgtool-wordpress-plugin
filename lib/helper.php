@@ -468,48 +468,37 @@ function insertOrUpdateShipAsItem($ship) {
     }
 
 
-    /*
     $props = array();
-    $table_ptype = $wpdb->prefix . "ot_item_prop_type";
-    $table_prop = $wpdb->prefix . "ot_item_prop";
+    $table_ptype = $wpdb->prefix . "ot_prop_type";
+    $table_prop = $wpdb->prefix . "ot_prop";
+    $table_item_prop = $wpdb->prefix . "ot_item_prop";
+
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_ptype . ' WHERE typeName = "stats"');
+    $statsid = $result->id;
+    if(!isset($statsid)) {
+        $res = $wpdb->insert($table_ptype, array( "typeName" => "stats"));
+        $statsid = $wpdb->insert_id;
+    }
+
     foreach ($array("class", "crew", "length", "mass") as $prop) {
         $propval = $ship[$prop];
 
-        $result = $wpdb->get_row( 'SELECT * FROM ' . $table_ptype . ' WHERE name = "' . $prop . '"');
-        $ptid = $result->id;
-        if(!isset($ptid)) {
-            $res = $wpdb->insert($table_ptype, array( "typeName" => "stats", "name" => $prop));
-            $ptid = $wpdb->insert_id;
-        }
-
-        $result = $wpdb->get_row( 'SELECT * FROM ' . $table_prop . ' WHERE type = "' . $ptid . '" and value = "' . $propval . '"');
+        // insert or update property
+        $result = $wpdb->get_row( 'SELECT * FROM ' . $table_prop . ' WHERE type = "' . $statsid . '" and name = "' . $prop . '" value = "' . $propval . '"');
         $pid = $result->id;
         if(!isset($pid)) {
-            $res = $wpdb->insert($table_prop, array( "name" => $prop, "value" => $propval));
+            $res = $wpdb->insert($table_prop, array( "type" => $statid, "name" => $prop, "value" => $propval));
             $pid = $wpdb->insert_id;
         }
         
-        array_push($props, $pid);
-
-        unset($ship[$prop]);
+        // add property to model
+        $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item_prop . ' WHERE item = "' . $model . '" and prop = "' . $pid . '"');
+        $piid = $result->id;
+        if(!isset($piid)) {
+            $res = $wpdb->insert($table_item_prop, array( "item" => $model, "prop" => $pid));
+            $pid = $wpdb->insert_id;
+        }
     }
-     */
-
-
-    /*
-
-    $table_ship = $wpdb->prefix . "ot_ship_model";
-    $results = $wpdb->get_row( 'SELECT * FROM ' . $table_ship . ' WHERE id = "' . $ship["id"] . '"');
-
-    if(isset($results->id)) {
-        error_log("ship update " . $ship["id"] . " | " . $ship["name"]);
-        $wpdb->update($table_ship, $ship, array( 'id' => $ship["id"]));
-
-    } else {
-        error_log("ship insert " . $ship["id"] . " | " . $ship["name"]);
-        $wpdb->insert($table_ship, $ship);
-    }
-    */
 }
 
 function insertOrUpdateShip($ship) {
