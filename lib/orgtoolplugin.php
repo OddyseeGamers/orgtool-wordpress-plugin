@@ -200,6 +200,9 @@ class OrgtoolPlugin {
         ) $charset_collate;";
     }
 
+
+
+
     function initFixtures() {
         $json = file_get_contents(dirname(__FILE__) . "/../fixtures/units.json");
         $json_a = json_decode($json, true);
@@ -231,7 +234,7 @@ class OrgtoolPlugin {
 
     function otp_activation() {
         error_log(">> ot_activate");
-        self::createSchema();
+//         self::createSchema();
         self::fetchAll();
 //         self::initFixtures();
 //         self::importFromWP();
@@ -239,8 +242,8 @@ class OrgtoolPlugin {
 
     function otp_deactivation() {
         error_log(">> ot_deactivate");
-        self::createSchema();
-        self::fetchAll();
+//         self::createSchema();
+//         self::fetchAll();
 //         self::importFromWP();
     }
 }
