@@ -110,10 +110,10 @@ class Orgtool_API_Item extends WP_REST_Controller
       $item->items = $ids;
 	}
 
-    if ( null !== $unit ) {
+    if ( null !== $item ) {
 		return array('item' => $item);
     } else { 
-      return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
+      return new WP_Error( 'error', __( 'item not found' ), array( 'status' => 404 ) );
     }
   }
 
