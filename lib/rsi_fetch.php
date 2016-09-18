@@ -79,7 +79,7 @@ function fetchShips() {
 	usort($ships, 'sortByOrder');
 
 	foreach ($ships as $ship) {
-		 insertOrUpdateShip($ship);
+		 insertOrUpdateShipAsItem($ship);
 	}
 }
 

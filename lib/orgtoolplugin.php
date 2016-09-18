@@ -7,14 +7,20 @@ class OrgtoolPlugin {
         $charset_collate = $wpdb->get_charset_collate();
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-        dbDelta( self::createMembers($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createUnits($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createUnitTypes($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createShipModels($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createShipManufacturer($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createShipClass($wpdb->prefix, $charset_collate) );
-        dbDelta( self::createShip($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createMembers($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createUnits($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createUnitTypes($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createMemberUnits($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createShipModels($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createShipManufacturer($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createShipClass($wpdb->prefix, $charset_collate) );
+//         dbDelta( self::createShip($wpdb->prefix, $charset_collate) );
+
+        dbDelta( self::createItemPropertyType($wpdb->prefix, $charset_collate) );
+        dbDelta( self::createItemProperties($wpdb->prefix, $charset_collate) );
+        dbDelta( self::createItemType($wpdb->prefix, $charset_collate) );
+        dbDelta( self::createItem($wpdb->prefix, $charset_collate) );
+
         error_log(">> create schema done");
     }
 
@@ -32,10 +38,10 @@ class OrgtoolPlugin {
             UNIQUE KEY id (id)
         ) $charset_collate;";
     }
-    //           ships int(11) DEFAULT NULL,
-    //           units int(11) DEFAULT NULL,
-    //           rewards int(11) DEFAULT NULL,
-    //           logs int(11) DEFAULT NULL,
+//           ships int(11) DEFAULT NULL,
+//           units int(11) DEFAULT NULL,
+//           rewards int(11) DEFAULT NULL,
+//           logs int(11) DEFAULT NULL,
 
     function createUnits($prefix, $charset_collate) {
         $table_name = $prefix . "ot_unit";
@@ -60,7 +66,7 @@ class OrgtoolPlugin {
             img text,
             ordering int(11),
             UNIQUE KEY id (id)
-      ) $charset_collate;";
+        ) $charset_collate;";
     }
 
     function createMemberUnits($prefix, $charset_collate) {
@@ -86,13 +92,13 @@ class OrgtoolPlugin {
             updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             manufacturer int(11) DEFAULT NULL,
             class int(11) DEFAULT NULL,
-            type int(11) DEFAULT NULL,
-            UNIQUE KEY id (id)
+                type int(11) DEFAULT NULL,
+                UNIQUE KEY id (id)
             ) $charset_collate;";
     }
 
-    //           roles int(11) DEFAULT NULL,
-    //           ships int(11) DEFAULT NULL,
+//           roles int(11) DEFAULT NULL,
+//           ships int(11) DEFAULT NULL,
 
     function createShipManufacturer($prefix, $charset_collate) {
         $table_name = $prefix . "ot_ship_manufacturer";
@@ -126,13 +132,14 @@ class OrgtoolPlugin {
             hidden tinyint(1),
            available tinyint(1),
            UNIQUE KEY id (id)
-      ) $charset_collate;";
+       ) $charset_collate;";
     }
 
     function createItemPropertyType($prefix, $charset_collate) {
         $table_name = $prefix . "ot_item_prop_type";
         return "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
+            typeName tinytext NOT NULL,
             name tinytext NOT NULL,
             description text,
             img text,
@@ -144,13 +151,25 @@ class OrgtoolPlugin {
         $table_name = $prefix . "ot_item_prop";
         return "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            name tinytext,
-            type int(11) DEFAULT NULL,
+            name tinytext NOT NULL,
             description text,
             img text,
             value text,
             updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-            parent int(11) DEFAULT NULL,
+            type int(11) DEFAULT NULL,
+            item int(11) DEFAULT NULL,
+            UNIQUE KEY id (id)
+        ) $charset_collate;";
+    }
+
+    function createItemType($prefix, $charset_collate) {
+        $table_name = $prefix . "ot_item_type";
+        return "CREATE TABLE $table_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            typeName tinytext NOT NULL,
+            name tinytext NOT NULL,
+            description text,
+            img text,
             UNIQUE KEY id (id)
         ) $charset_collate;";
     }
@@ -160,12 +179,14 @@ class OrgtoolPlugin {
         return "CREATE TABLE $table_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             name tinytext,
-            properties int(11) DEFAULT NULL,
+            description text,
+            img text,
+            type int(11) DEFAULT NULL,
+            parent int(11) DEFAULT NULL,
             member int(11) DEFAULT NULL,
-            hidden tinyint(1),
-            available tinyint(1),
+            unit int(11) DEFAULT NULL,
             UNIQUE KEY id (id)
-      ) $charset_collate;";
+        ) $charset_collate;";
     }
 
     function initFixtures() {
@@ -183,14 +204,14 @@ class OrgtoolPlugin {
     }
 
     function fetchAll() {
-//      fetchShips();
+        fetchShips();
 
-        $rsimembers = fetchMembers();
-        $rsimembersleft = mergeWPMembers($rsimembers);
-        $reversed = array_reverse($rsimembersleft);
-        foreach ($reversed as $mem) {
-            insertOrUpdateMember($mem);
-        }
+//         $rsimembers = fetchMembers();
+//         $rsimembersleft = mergeWPMembers($rsimembers);
+//         $reversed = array_reverse($rsimembersleft);
+//         foreach ($reversed as $mem) {
+//             insertOrUpdateMember($mem);
+//         }
     }
 
     function importFromWP() {
@@ -199,17 +220,17 @@ class OrgtoolPlugin {
 
     function otp_activation() {
         error_log(">> ot_activate");
-
-        //         self::createSchema();
+        self::createSchema();
         self::fetchAll();
-        //         self::initFixtures();
-        //         self::importFromWP();
+//         self::initFixtures();
+//         self::importFromWP();
     }
 
     function otp_deactivation() {
         error_log(">> ot_deactivate");
-        //         self::fetchAll();
-        //         self::importFromWP();
+        self::createSchema();
+        self::fetchAll();
+//         self::importFromWP();
     }
 }
 
