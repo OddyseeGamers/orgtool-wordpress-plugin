@@ -204,7 +204,7 @@ class Orgtool_API_Item extends WP_REST_Controller
       foreach($item_ids as $p) {
         array_push($ids, $p->id);
       }
-      $item_types->items = $ids;
+      $item_type->items = $ids;
 	}
 
 //     return array('units' => $results);
