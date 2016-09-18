@@ -29,7 +29,7 @@ require_once(dirname(__FILE__) . "/lib/controllers/ship_controller.php");
 require_once(dirname(__FILE__) . "/lib/controllers/member_unit_controller.php");
 
 require_once(dirname(__FILE__) . "/lib/controllers/item_controller.php");
-// require_once(dirname(__FILE__) . "/lib/controllers/prop_controller.php");
+require_once(dirname(__FILE__) . "/lib/controllers/prop_controller.php");
 // require_once(dirname(__FILE__) . "/lib/controllers/item_prop_controller.php");
 
 require_once(dirname(__FILE__) . "/lib/controllers/public_controller.php");
@@ -71,6 +71,9 @@ function orgtool_api_init() {
 	$controller->register_routes();
 
 	$controller = new Orgtool_API_Item();
+	$controller->register_routes();
+
+	$controller = new Orgtool_API_Prop();
 	$controller->register_routes();
 
 	$controller = new Orgtool_API_Public();

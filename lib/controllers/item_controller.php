@@ -73,9 +73,8 @@ class Orgtool_API_Item extends WP_REST_Controller
     $searchsql = 'SELECT * FROM ' . $table_item . ' order by id';
     $results = $wpdb->get_results($searchsql);
 
-    $table_prop = $wpdb->prefix . "ot_item_prop";
     foreach($results as $item) {
-        $item->props = $this->get_props_for_item($item->id);
+        $item->item_props = $this->get_itemprops_for_item($item->id);
 	}
 
 	return rest_ensure_response( array('items' => $results) );
@@ -90,14 +89,14 @@ class Orgtool_API_Item extends WP_REST_Controller
     $item = $wpdb->get_row($searchsql);
 
     if ( null !== $item ) {
-        $item->props = $this->get_props_for_item($item->id);
+        $item->item_props = $this->get_itemprops_for_item($item->id);
 		return array('item' => $item);
     } else { 
       return new WP_Error( 'error', __( 'item not found' ), array( 'status' => 404 ) );
     }
   }
 
-  private function get_props_for_item($itemid) {
+  private function get_itemprops_for_item($itemid) {
     global $wpdb;
     $table_prop = $wpdb->prefix . "ot_item_prop";
     $sql = 'SELECT id FROM ' . $table_prop . ' WHERE item = ' . $itemid;
