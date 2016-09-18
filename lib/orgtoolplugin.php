@@ -156,6 +156,7 @@ class OrgtoolPlugin {
             description text,
             img text,
             value text,
+            unit text,
             updated_at datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             type int(11) DEFAULT NULL,
             item int(11) DEFAULT NULL,
