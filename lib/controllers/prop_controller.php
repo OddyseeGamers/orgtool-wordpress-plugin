@@ -17,19 +17,19 @@ class Orgtool_API_Prop extends WP_REST_Controller
 				'permission_callback' => array( $this, 'get_props_permissions_check' ),
 			),
 		) );
-        /*
+
 		register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_property' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
+				'callback'        => array( $this, 'get_prop' ),
+				'permission_callback' => array( $this, 'get_props_permissions_check' ),
 				'args'            => array(
 					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
 				),
 			),
 		) );
 
-
+        /*
 		register_rest_route($this->namespace, '/' . $this->base_class, array(
 			array(
 				'methods'         => WP_REST_Server::READABLE,
@@ -63,31 +63,46 @@ class Orgtool_API_Prop extends WP_REST_Controller
 
 
 
-  public function get_props($request) {
-    global $wpdb;
-    $table_prop = $wpdb->prefix . "ot_prop";
-    $searchsql = 'SELECT * FROM ' . $table_prop . ' order by id';
-    $results = $wpdb->get_results($searchsql);
+    public function get_props($request) {
+        global $wpdb;
+        $table_prop = $wpdb->prefix . "ot_prop";
+        $searchsql = 'SELECT * FROM ' . $table_prop . ' order by id';
+        $results = $wpdb->get_results($searchsql);
 
-    foreach($results as $prop) {
-        $prop->item_props = $this->get_itemprops_for_prop($prop->id);
-	}
+        foreach($results as $prop) {
+            $prop->item_props = $this->get_itemprops_for_prop($prop->id);
+        }
 
-	return rest_ensure_response( array('props' => $results) );
-  }
-
-  private function get_items_for_prop($propid) {
-    global $wpdb;
-    $table_item_prop = $wpdb->prefix . "ot_item_prop";
-    $sql = 'SELECT id FROM ' . $table_item_prop . ' WHERE prop = ' . $propid;
-    $item_prop_ids = $wpdb->get_results( $sql);
-
-    $ids = array();
-    foreach($item_prop_ids as $p) {
-      array_push($ids, $p->id);
+        return rest_ensure_response( array('props' => $results) );
     }
-    return $ids;
-  }
+
+    public function get_prop($request) {
+        global $wpdb;
+        $id = (int) $request['id'];
+        $table_prop = $wpdb->prefix . "ot_prop";
+        $searchsql = 'SELECT * FROM ' . $table_prop . ' where id = '. $id;
+        $prop = $wpdb->get_row($searchsql);
+
+        if ( null !== $prop ) {
+            $prop->item_props = $this->get_itemprops_for_prop($prop->id);
+            return array('prop' => $prop);
+        } else { 
+            return new WP_Error( 'error', __( 'prop not found' ), array( 'status' => 404 ) );
+        }
+    }
+
+    private function get_itemprops_for_prop($propid) {
+        global $wpdb;
+        $table_item_prop = $wpdb->prefix . "ot_item_prop";
+        $sql = 'SELECT id FROM ' . $table_item_prop . ' WHERE prop = ' . $propid;
+        $item_prop_ids = $wpdb->get_results( $sql);
+
+        $ids = array();
+        foreach($item_prop_ids as $p) {
+            array_push($ids, $p->id);
+        }
+        return $ids;
+    }
 
     /*
   public function get_ship_model($request) {
