@@ -480,7 +480,7 @@ function insertOrUpdateShipAsItem($ship) {
         $statsid = $wpdb->insert_id;
     }
 
-    foreach ($array("class", "crew", "length", "mass") as $prop) {
+    foreach (array("class", "crew", "length", "mass") as $prop) {
         $propval = $ship[$prop];
 
         // insert or update property
