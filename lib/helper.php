@@ -425,24 +425,62 @@ function insertOrUpdateShipAsItem($ship) {
 // "mname" => $mname,
 // "updated_at" => current_time( 'mysql' )
 
-    // check if there is an item of type manufacturer
-    $mname = $ship['mname'];
-    $mimg = $ship['mimg'];
-
-
+    // check if there is an item prop of type manufacturer
     $table_itype = $wpdb->prefix . "ot_item_type";
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE name = "' . $mname . '"');
-    if(isset($result->id)) {
-        $ship["parent"] = $result->id;
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE name = "' . $ship['mname'] . '"');
+    $manuType = $result->id;
+    if(!isset($manuType)) {
+        $res = $wpdb->insert($table_itype, array("typeName" => "manufacturer", "name" => $ship['mname'], "img" => $ship['mimg'] ));
+        $manuType = $wpdb->insert_id;
     } else {
-        $res = $wpdb->insert($table_itype, array( "name" => $mname, "img" => $mimg ));
-        $ship["parent"] = $wpdb->insert_id;
+        $wpdb->update($table_itype, $array("img" => $ship['mimg'], array( 'id' => $manuType));
     }
 
+    // check if there is an item of type manufacturer
+    $table_item = $wpdb->prefix . "ot_item";
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["mname"] . '" and parent = "' . $manuType . '"');
+    $manu = $result->id
+    if(!isset($manu)) {
+        $res = $wpdb->insert($table_item, array("type" => $manuType, "name" => $ship['mname'], "img" => $ship["mimg"] ));
+        $manu = $wpdb->insert_id;
+    }
+
+    unset($ship['mname']);
+    unset($ship['mimg']);
+
+
+    // check if there is an item prop of type shipmodel
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE name = "' . $ship['name'] . '"');
+    $modelType = $result->id;
+    if(!isset($modelType)) {
+        $res = $wpdb->insert($table_itype, array("typeName" => "shipModel", "name" => $ship['name'], "img" => $ship['img'] ));
+        $modelType = $wpdb->insert_id;
+    } else {
+        $wpdb->update($table_itype, $array("img" => $ship['img']), array( 'id' => $modelType));
+    }
+
+    // check if there is an item of type shipModel
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["name"] . '" and parent = "' . $modelType . '"');
+    $model = $result->id
+    if(!isset($model)) {
+        $res = $wpdb->insert($table_item, array("type" => $modelType, "parent" => $manu, "name" => $ship['name'], "img" => $ship["img"] ));
+        $model = $wpdb->insert_id;
+    }
+
+/*
+    $ship["parent"] = $model;
+
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE id = "' . $ship['id'] . '"');
+    $iid = $result->id;
+    if(!isset($iid)) {
+        $res = $wpdb->insert($table_item, array("id" => $ship["id"], "name" => $mname, "img" => $mimg ));
+        $iid = $wpdb->insert_id;
+    } else if ($result->parent != $ship["parent"]) {
+        // TODO: update all old ships
+    } 
+    $ship["parent"] = $iid;
 
     $props = array();
-    $sclass = $ship['class'];
-
     $table_ptype = $wpdb->prefix . "ot_item_prop_type";
     $table_prop = $wpdb->prefix . "ot_item_prop";
     foreach ($array("class", "crew", "length", "mass") as $prop) {
@@ -466,9 +504,7 @@ function insertOrUpdateShipAsItem($ship) {
 
         unset($ship[$prop]);
     }
-
-//     unset($ship['mname']);
-//     unset($ship['mimg']);
+*/
 //     unset($ship['class']);
 
 
