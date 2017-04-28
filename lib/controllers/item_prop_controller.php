@@ -1,66 +1,61 @@
 <?php
 
-class Orgtool_API_ItemProp extends WP_REST_Controller
+class Orgtool_API_ItemProp
 {
-	protected $namespace = 'orgtool';
-	private $base = 'item_props';
+    protected $namespace = 'orgtool';
+    private $base = 'item_props';
 
-	/**
-	 * Register the routes for the objects of the controller.
-	 */
-	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->base, array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item_props' ),
-				'permission_callback' => array( $this, 'get_itemprops_permissions_check' ),
-			),
-//             array(
-//                 'methods'         => WP_REST_Server::CREATABLE,
-//                 'callback'        => array( $this, 'create_member_unit' ),
-//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
-//             ),
-		) );
+    /**
+     * Register the routes for the objects of the controller.
+     */
+    public function register_routes() {
+        register_rest_route($this->namespace, '/' . $this->base, array(
+            array(
+                'methods'         => WP_REST_Server::READABLE,
+                'callback'        => array( $this, 'get_item_props' ),
+//                 'permission_callback' => array( $this, 'get_itemprops_permissions_check' ),
+            ),
+            //             array(
+            //                 'methods'         => WP_REST_Server::CREATABLE,
+            //                 'callback'        => array( $this, 'create_member_unit' ),
+            //                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
+            //             ),
+        ) );
 
-		register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_item_prop' ),
-				'permission_callback' => array( $this, 'get_itemprops_permissions_check' ),
-				'args'            => array(
-					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
-				),
-			),
+        register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
+            array(
+                'methods'         => WP_REST_Server::READABLE,
+                'callback'        => array( $this, 'get_item_prop' ),
+//                 'permission_callback' => array( $this, 'get_itemprops_permissions_check' ),
+            ),
         /*
 //             array(
 //                 'methods'         => WP_REST_Server::EDITABLE,
 //                 'callback'        => array( $this, 'update_ship_model' ),
 //                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
 //             ),
-			array(
-				'methods'  => WP_REST_Server::DELETABLE,
-				'callback' => array( $this, 'delete_member_unit' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-				'args'     => array(
-					'force'    => array(
-						'default'      => false,
-					),
-				),
-			),
+            array(
+                'methods'  => WP_REST_Server::DELETABLE,
+                'callback' => array( $this, 'delete_member_unit' ),
+                'permission_callback' => array( $this, 'get_units_permissions_check' ),
+                'args'     => array(
+                    'force'    => array(
+                        'default'      => false,
+                    ),
+                ),
+            ),
          */
-		) );
-	}
+        ) );
+    }
 
-	public function get_itemprops_permissions_check( $request ) {
-/*
-		$post_type = get_post_type_object( $this->post_type );
-
-		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit these posts in this post type' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-*/
-		return true;
-	}
+    public function get_itemprops_permissions_check( $request ) {
+        $user_id = wp_validate_auth_cookie( $_COOKIE[LOGGED_IN_COOKIE], 'logged_in' );
+        if (!$user_id) {
+            //         if (!$user_id || !user_can($user_id, 'administrator')) {
+            return new WP_Error( 'error', __( 'permission denied' ), array( 'status' => 550 ) );
+        }
+        return true;
+    }
 
 
 
@@ -90,11 +85,11 @@ class Orgtool_API_ItemProp extends WP_REST_Controller
 
   /*
   public function create_member_unit($request) {
-	// why do I have to do this?? missing arg? WP API borken?
-	$data = json_decode( $request->get_body(), true );
-	if ( ! empty( $data['memberUnit'] ) ) {
-	  $data = $data["memberUnit"];
-	}
+    // why do I have to do this?? missing arg? WP API borken?
+    $data = json_decode( $request->get_body(), true );
+    if ( ! empty( $data['memberUnit'] ) ) {
+      $data = $data["memberUnit"];
+    }
 
 //     $data["member"] = $data["member_id"];
 //     unset($data["member_id"]);
@@ -115,16 +110,16 @@ class Orgtool_API_ItemProp extends WP_REST_Controller
   }
 
     public function delete_member_unit($request) {
-	  $id = (int) $request['id'];
-	  $unit = $this->get_member_unit( array("id" => $id), false);
+      $id = (int) $request['id'];
+      $unit = $this->get_member_unit( array("id" => $id), false);
 //       return array("unit" => $res, "data" => $data, "inserted id" => $wpdb->insert_id);
 
-	  if ( empty( $id ) || empty($unit["member_unit"]) ||  empty( $unit["member_unit"]->id ) ) {
-		  return new WP_Error( 'error', __( 'member unit not found 2 '), array( 'status' => 404 ) );
-	  }
-	  global $wpdb;
-	  $table_name = $wpdb->prefix . "ot_member_unit";
-	  $res = $wpdb->delete($table_name, array('id' => $id));
+      if ( empty( $id ) || empty($unit["member_unit"]) ||  empty( $unit["member_unit"]->id ) ) {
+          return new WP_Error( 'error', __( 'member unit not found 2 '), array( 'status' => 404 ) );
+      }
+      global $wpdb;
+      $table_name = $wpdb->prefix . "ot_member_unit";
+      $res = $wpdb->delete($table_name, array('id' => $id));
 
     if (null !== $res) {
 //       return array("create ok" => $res, "data" => $data, "inserted id" => $wpdb->insert_id);
@@ -133,7 +128,7 @@ class Orgtool_API_ItemProp extends WP_REST_Controller
       return new WP_Error( 'error', __( 'unit not created' ), array( 'status' => 400 ) );
     }
   }
-     */
+   */
 
 }
 

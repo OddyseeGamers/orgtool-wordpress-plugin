@@ -1,0 +1,28 @@
+{
+    "item_types": [
+        {
+            "description": null,
+            "id": "1",
+            "img": null,
+            "name": "Manufacturer",
+            "permissions": "0",
+            "typeName": "manufacturer"
+        },
+        {
+            "description": null,
+            "id": "2",
+            "img": null,
+            "name": "Ship Model",
+            "permissions": "0",
+            "typeName": "shipModel"
+        },
+        {
+            "description": null,
+            "id": "3",
+            "img": null,
+            "name": "Ship",
+            "permissions": "1",
+            "typeName": "ship"
+        }
+    ]
+}

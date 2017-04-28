@@ -1,65 +1,58 @@
 <?php
 
-class Orgtool_API_Prop extends WP_REST_Controller
+class Orgtool_API_Prop
 {
-	protected $namespace = 'orgtool';
-	private $base = 'props';
-	private $base_type = 'prop_types';
+    protected $namespace = 'orgtool';
+    private $base = 'props';
+    private $base_type = 'prop_types';
 
-	/**
-	 * Register the routes for the objects of the controller.
-	 */
-	public function register_routes() {
-		register_rest_route($this->namespace, '/' . $this->base, array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_props' ),
-				'permission_callback' => array( $this, 'get_props_permissions_check' ),
-			),
-		) );
+    /**
+     * Register the routes for the objects of the controller.
+     */
+    public function register_routes() {
+        register_rest_route($this->namespace, '/' . $this->base, array(
+            array(
+                'methods'         => WP_REST_Server::READABLE,
+                'callback'        => array( $this, 'get_props' ),
+//                 'permission_callback' => array( $this, 'get_props_permissions_check' ),
+            ),
+        ) );
 
-		register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_prop' ),
-				'permission_callback' => array( $this, 'get_props_permissions_check' ),
-				'args'            => array(
-					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
-				),
-			),
-		) );
+        register_rest_route($this->namespace, '/' . $this->base . '/(?P<id>[\d]+)', array(
+            array(
+                'methods'         => WP_REST_Server::READABLE,
+                'callback'        => array( $this, 'get_prop' ),
+//                 'permission_callback' => array( $this, 'get_props_permissions_check' ),
+            ),
+        ) );
 
-        /*
-		register_rest_route($this->namespace, '/' . $this->base_class, array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_ship_classes' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-			),
-		) );
-		register_rest_route($this->namespace, '/' . $this->base_class . '/(?P<id>[\d]+)', array(
-			array(
-				'methods'         => WP_REST_Server::READABLE,
-				'callback'        => array( $this, 'get_ship_class' ),
-				'permission_callback' => array( $this, 'get_units_permissions_check' ),
-				'args'            => array(
-					'context'          => $this->get_context_param( array( 'default' => 'view' ) ),
-				),
-			),
-		) );
-         */
-	}
+        //////////////////
 
-	public function get_props_permissions_check( $request ) {
-/*
-		$post_type = get_post_type_object( $this->post_type );
+        register_rest_route($this->namespace, '/' . $this->base_type, array(
+            array(
+                'methods'         => WP_REST_Server::READABLE,
+                'callback'        => array( $this, 'get_prop_types' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
+            ),
+        ) );
+        register_rest_route($this->namespace, '/' . $this->base_type . '/(?P<id>[\d]+)', array(
+            array(
+                'methods'         => WP_REST_Server::READABLE,
+                'callback'        => array( $this, 'get_prop_type' ),
+//                 'permission_callback' => array( $this, 'get_units_permissions_check' ),
+            ),
+        ) );
 
-		if ( 'edit' === $request['context'] && ! current_user_can( $post_type->cap->edit_posts ) ) {
-			return new WP_Error( 'rest_forbidden_context', __( 'Sorry, you are not allowed to edit these posts in this post type' ), array( 'status' => rest_authorization_required_code() ) );
-		}
-*/
-		return true;
-	}
+    }
+
+    public function get_props_permissions_check( $request ) {
+        $user_id = wp_validate_auth_cookie( $_COOKIE[LOGGED_IN_COOKIE], 'logged_in' );
+        if (!$user_id) {
+            //         if (!$user_id || !user_can($user_id, 'administrator')) {
+            return new WP_Error( 'error', __( 'permission denied' ), array( 'status' => 550 ) );
+        }
+        return true;
+    }
 
 
 
@@ -104,17 +97,61 @@ class Orgtool_API_Prop extends WP_REST_Controller
         return $ids;
     }
 
+    ////////////////////////////////////////
+
+    public function get_prop_types($request) {
+        global $wpdb;
+        $table_prop = $wpdb->prefix . "ot_prop_type";
+        $searchsql = 'SELECT * FROM ' . $table_prop . ' order by id';
+        $results = $wpdb->get_results($searchsql);
+
+        foreach($results as $propt) {
+            $propt->items = $this->get_items_for($propt->id);
+        }
+
+        return rest_ensure_response( array('prop_types' => $results) );
+    }
+
+    public function get_prop_type($request) {
+        global $wpdb;
+        $id = (int) $request['id'];
+        $table_type = $wpdb->prefix . "ot_prop_type";
+        $searchsql = 'SELECT * FROM ' . $table_type . ' where id = '. $id;
+        $prop_type = $wpdb->get_row($searchsql);
+
+        if ( null !== $prop_type ) {
+            $prop_type->items = $this->get_items_for($prop_type->id);
+            return array('prop_type' => $prop_type);
+        } else { 
+            return new WP_Error( 'error', __( 'prop_type not found' ), array( 'status' => 404 ) );
+        }
+    }
+
+    private function get_items_for($prop_type_id) {
+        global $wpdb;
+        $table_item = $wpdb->prefix . "ot_item";
+        $sql = 'SELECT id FROM ' . $table_item . ' WHERE type = ' . $prop_type_id;
+        $item_ids = $wpdb->get_results( $sql);
+        $ids = array();
+        foreach($item_ids as $p) {
+            array_push($ids, $p->id);
+        }
+        return $ids;
+    }
+
+
+
     /*
   public function get_ship_model($request) {
     global $wpdb;
-	  $id = (int) $request['id'];
+      $id = (int) $request['id'];
     $table_name = $wpdb->prefix . "ot_ship_model";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $unit = $wpdb->get_row($searchsql);
 
 //     $id = (int) $id;
     if ( null !== $unit ) {
-		return array('ship_model' => $unit);
+        return array('ship_model' => $unit);
     } else { 
       return new WP_Error( 'error', __( 'unit not found' ), array( 'status' => 404 ) );
     }
@@ -122,9 +159,9 @@ class Orgtool_API_Prop extends WP_REST_Controller
 
 
   public function create_ship_model($request) {
-	
-	$data = array();
-	
+
+    $data = array();
+
     if ( ! empty( $request['unit'] ) ) {
       $data = $request["unit"];
 //       unset($data["members"]);
@@ -147,15 +184,15 @@ class Orgtool_API_Prop extends WP_REST_Controller
 
 
   public function update_ship_model($request) {
-	  $id = (int) $request['id'];
+      $id = (int) $request['id'];
 
-	  $ship_model = $this->get_ship_model( $id, false );
+      $ship_model = $this->get_ship_model( $id, false );
 
-	  if ( empty( $id ) || empty( $ship_model->id ) ) {
-		  return new WP_Error( 'error', __( 'unit not found 3 '), array( 'status' => 404 ) );
-	  }
+      if ( empty( $id ) || empty( $ship_model->id ) ) {
+          return new WP_Error( 'error', __( 'unit not found 3 '), array( 'status' => 404 ) );
+      }
 
-	  $data = array();
+      $data = array();
 //       $data['name'] = $request['name'];
 //       $data['description'] = $request['description'];
 //       $data['color'] = $request['color'];
@@ -171,23 +208,23 @@ class Orgtool_API_Prop extends WP_REST_Controller
     global $wpdb;
     $table_name = $wpdb->prefix . "ot_ship_model";
     $res = $wpdb->update($table_name, $data, array( 'id' => $id));
-	if (false !== $res ) {
-		return $this->get_ship_model( $id );
-	} else {
-		return new WP_Error( 'error', __( 'update ship_model error ' . $res->last_error), array( 'status' => 404 ) );
-	}
+    if (false !== $res ) {
+        return $this->get_ship_model( $id );
+    } else {
+        return new WP_Error( 'error', __( 'update ship_model error ' . $res->last_error), array( 'status' => 404 ) );
+    }
   }
 
   public function delete_ship_model($request) {
-	  $id = (int) $request['id'];
-	  $unit = $this->get_ship_model( $id , false);
+      $id = (int) $request['id'];
+      $unit = $this->get_ship_model( $id , false);
 
-	  if ( empty( $id ) || empty( $unit->id ) ) {
-		  return new WP_Error( 'error', __( 'ship_model not found 2 '), array( 'status' => 404 ) );
-	  }
-	  global $wpdb;
-	  $table_name = $wpdb->prefix . "ot_ship_model";
-	  $res = $wpdb->delete($table_name, array('id' => $id));
+      if ( empty( $id ) || empty( $unit->id ) ) {
+          return new WP_Error( 'error', __( 'ship_model not found 2 '), array( 'status' => 404 ) );
+      }
+      global $wpdb;
+      $table_name = $wpdb->prefix . "ot_ship_model";
+      $res = $wpdb->delete($table_name, array('id' => $id));
   }
 
 
@@ -210,38 +247,38 @@ class Orgtool_API_Prop extends WP_REST_Controller
         array_push($ids, $p->id);
       }
       $ship_class->ship_models = $ids;
-	}
+    }
 
 //     return array('units' => $results);
-	$response = rest_ensure_response( array('ship_classes' => $results) );
+    $response = rest_ensure_response( array('ship_classes' => $results) );
 //     $response->header( 'Content-Type', "application/json" );
-	return $response;
+    return $response;
   }
 
 
   public function get_ship_class($request) {
     global $wpdb;
-	$id = (int) $request['id'];
+    $id = (int) $request['id'];
     $table_name = $wpdb->prefix . "ot_ship_class";
     $searchsql = 'SELECT * FROM ' . $table_name . ' where id = '. $id;
     $ship_class = $wpdb->get_row($searchsql);
 
-	if ( null !== $ship_class ) {
-		$table_ship = $wpdb->prefix . "ot_ship_model";
+    if ( null !== $ship_class ) {
+        $table_ship = $wpdb->prefix . "ot_ship_model";
 
-		$sql = 'SELECT id FROM ' . $table_ship . ' WHERE class = ' . $ship_class->id;
-		$ship_ids = $wpdb->get_results( $sql);
+        $sql = 'SELECT id FROM ' . $table_ship . ' WHERE class = ' . $ship_class->id;
+        $ship_ids = $wpdb->get_results( $sql);
 
-		$ids = array();
-		foreach($ship_ids as $p) {
-			array_push($ids, $p->id);
-		}
-		$ship_class->ship_models = $ids;
+        $ids = array();
+        foreach($ship_ids as $p) {
+            array_push($ids, $p->id);
+        }
+        $ship_class->ship_models = $ids;
 
-		return array('ship_class' => $ship_class);
-	} else { 
-		return new WP_Error( 'error', __( 'ship_class not found' ), array( 'status' => 404 ) );
-	}
+        return array('ship_class' => $ship_class);
+    } else { 
+        return new WP_Error( 'error', __( 'ship_class not found' ), array( 'status' => 404 ) );
+    }
   }
      */
 

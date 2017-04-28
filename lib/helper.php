@@ -1,5 +1,13 @@
 <?php
 
+function getUserCaps() {
+        return array("read_orgtool_overview", "edit_orgtool_overview", "delete_orgtool_overview",
+                "read_orgtool_member_assignment", "edit_orgtool_member_assignment", "delete_orgtool_member_assignment",
+                "read_orgtool_member_management", "edit_orgtool_member_management", "delete_orgtool_member_management",
+                "read_orgtool_training", "edit_orgtool_training", "delete_orgtool_training",
+                "read_orgtool_missions", "edit_orgtool_missions", "delete_orgtool_missions");
+}
+
 
 function fuzzySearch($wp, $ots) {
     //     error_log("    - SEARCH " . $wp["wp_id"] . " " . sizeof($ots));
@@ -425,15 +433,15 @@ function insertOrUpdateShipAsItem($ship) {
 // "mname" => $mname,
 // "updated_at" => current_time( 'mysql' )
 
+    $log = "";
     // check if there is an item prop of type manufacturer
     $table_itype = $wpdb->prefix . "ot_item_type";
     $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "manufacturer"');
     $manuType = $result->id;
     if(!isset($manuType)) {
+        $log .= "<tr><td>new</td><td>Item Type</td><td>Manufacturer</td></tr>";
         $res = $wpdb->insert($table_itype, array("typeName" => "manufacturer", "name" =>  "Manufacturer"));
         $manuType = $wpdb->insert_id;
-//     } else {
-//         $wpdb->update($table_itype, array("img" => $ship['mimg']), array( 'id' => $manuType));
     }
 
     // check if there is an item of type manufacturer
@@ -441,32 +449,28 @@ function insertOrUpdateShipAsItem($ship) {
     $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["mname"] . '" and type = "' . $manuType . '"');
     $manu = $result->id;
     if(!isset($manu)) {
+        $log .= "<tr><td>new</td><td>Item</td><td>Manufacturer:" . $ship['mname'] . "</td></tr>";
         $res = $wpdb->insert($table_item, array("type" => $manuType, "name" => $ship['mname'], "img" => $ship["mimg"] ));
         $manu = $wpdb->insert_id;
     }
 
-    unset($ship['mname']);
-    unset($ship['mimg']);
-
-
     // check if there is an item prop of type ship
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "ship"');
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_itype . ' WHERE typeName = "shipModel"');
     $modelType = $result->id;
     if(!isset($modelType)) {
-        $res = $wpdb->insert($table_itype, array("typeName" => "ship", "name" => "Ship"));
+        $log .= "<tr><td>new</td><td>Item Type</td><td>Ship Model</td></tr>";
+        $res = $wpdb->insert($table_itype, array("typeName" => "shipModel", "name" => "Ship Model"));
         $modelType = $wpdb->insert_id;
-//     } else {
-//         $wpdb->update($table_itype, array("img" => $ship['img']), array( 'id' => $modelType));
     }
 
     // check if there is an item of type Model
-    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["name"] . '" and parent = "' . $modelType . '"');
+    $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item . ' WHERE name = "' . $ship["name"] . '" and type = "' . $modelType . '"');
     $model = $result->id;
     if(!isset($model)) {
+        $log .= "<tr><td>new</td><td>Item</td><td>" . $ship['name'] . " [Ship Model], " . $ship['mname'] . " [Manufacturer]" . "</td></tr>";
         $res = $wpdb->insert($table_item, array("type" => $modelType, "parent" => $manu, "name" => $ship['name'], "img" => $ship["img"] ));
         $model = $wpdb->insert_id;
     }
-
 
     $props = array();
     $table_ptype = $wpdb->prefix . "ot_prop_type";
@@ -476,17 +480,24 @@ function insertOrUpdateShipAsItem($ship) {
     $result = $wpdb->get_row( 'SELECT * FROM ' . $table_ptype . ' WHERE typeName = "stats"');
     $statsid = $result->id;
     if(!isset($statsid)) {
+        $log .= "<tr><td>new</td><td>Prop Type</td><td>stats</td></tr>";
         $res = $wpdb->insert($table_ptype, array( "typeName" => "stats"));
         $statsid = $wpdb->insert_id;
     }
 
+
     foreach (array("class" => "", "crew" => "count", "length" => "m", "mass" => "kg") as $prop => $unit) {
         $propval = $ship[$prop];
+
+        if (empty($propval)) {
+            continue;
+        }
 
         // insert or update property
         $result = $wpdb->get_row( 'SELECT * FROM ' . $table_prop . ' WHERE type = "' . $statsid . '" and name = "' . $prop . '" and value = "' . $propval . '"');
         $pid = $result->id;
         if(!isset($pid)) {
+            $log .= "<tr><td>new</td><td>Prop</td><td>" . $prop . " = " . $propval . ", unit: " . $unit . "</td></tr>";
             $res = $wpdb->insert($table_prop, array( "type" => $statsid, "name" => $prop, "value" => $propval, "unit" => $unit));
             $pid = $wpdb->insert_id;
         }
@@ -495,10 +506,20 @@ function insertOrUpdateShipAsItem($ship) {
         $result = $wpdb->get_row( 'SELECT * FROM ' . $table_item_prop . ' WHERE item = "' . $model . '" and prop = "' . $pid . '"');
         $piid = $result->id;
         if(!isset($piid)) {
+            $log .= "<tr><td>new</td><td>Item Prop</td><td>" . $prop . "[" . $propval . "]  | ship model = " . $model . ", prop = " . $pid . "</td></tr>";
             $res = $wpdb->insert($table_item_prop, array( "item" => $model, "prop" => $pid));
             $pid = $wpdb->insert_id;
         }
     }
+    
+    if (strlen($log) > 0) {
+        $log = "<tr><td colspan='3'><h4> " . $ship['name'] . " " . $ship['mname'] . " </h4></td></tr>" . $log;
+//         $log .= "<tr><td></td><td></td><td>-------------------</td></tr>";
+    }
+
+//     unset($ship['mname']);
+//     unset($ship['mimg']);
+    return $log;
 }
 
 function insertOrUpdateShip($ship) {
@@ -543,21 +564,17 @@ function insertOrUpdateShip($ship) {
 
 
 
-
-function insertOrUpdateUnit($unit) {
+function insertUnit($unit, $update = false) {
     global $wpdb;
 
     $table_unit = $wpdb->prefix . "ot_unit";
     $results = $wpdb->get_row( 'SELECT * FROM ' . $table_unit . ' WHERE id = "' . $unit["id"] . '"');
 
-    unset($unit['leader_ids']);
-    unset($unit['pilot_ids']);
-    unset($unit['unit_ids']);
-
     if(isset($results->id)) {
+      if ($update) {
         error_log("unit update " . $unit["id"] . " | " . $unit["name"]);
         $wpdb->update($table_unit, $unit, array( 'id' => $unit["id"]));
-
+      }
     } else {
         error_log("unit insert " . $unit["id"] . " | " . $unit["name"]);
         $wpdb->insert($table_unit, $unit);
@@ -565,16 +582,17 @@ function insertOrUpdateUnit($unit) {
 }
 
 
-function insertOrUpdateUnitType($type) {
+function insertUnitType($type, $update = false) {
     global $wpdb;
 
     $table_type = $wpdb->prefix . "ot_unit_type";
     $results = $wpdb->get_row( 'SELECT * FROM ' . $table_type . ' WHERE id = "' . $type["id"] . '"');
 
     if(isset($results->id)) {
+      if ($update) {
         error_log("unit type update " . $type["id"] . " | " . $type["name"]);
         $wpdb->update($table_type, $type, array( 'id' => $type["id"]));
-
+      }
     } else {
         error_log("unit type insert " . $type["id"] . " | " . $type["name"]);
         $wpdb->insert($table_type, $type);
